@@ -1,0 +1,66 @@
+---
+import { advantages } from '../data/company';
+---
+
+<section class="why section" id="about">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Почему «Парк Авто»</span>
+      <h2 class="h-section">Покупка без сюрпризов — от выбора до номеров</h2>
+    </div>
+    <ul class="why__grid">
+      {
+        advantages.map((a, i) => (
+          <li class="why__card" data-reveal>
+            <span class="why__num">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="h-card">{a.title}</h3>
+            <p>{a.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .why__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .why__card {
+    padding: clamp(24px, 3vw, 36px);
+    border-radius: var(--radius);
+    background: var(--bg-alt);
+    display: grid;
+    align-content: start;
+    gap: 12px;
+  }
+
+  .why__num {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .why__card p {
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 960px) {
+    .why__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .why__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

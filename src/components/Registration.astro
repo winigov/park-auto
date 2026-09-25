@@ -1,0 +1,157 @@
+---
+import { registration } from '../data/registration';
+---
+
+<section class="reg section" id="registration">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Учёт РФ или КР</span>
+      <h2 class="h-section">{registration.title}</h2>
+      <p class="lead">{registration.lead}</p>
+    </div>
+
+    <div class="reg__grid">
+      {
+        registration.options.map((o) => (
+          <article class="reg__card" data-reveal>
+            <p class="reg__tag">{o.tag}</p>
+            <h3 class="reg__title">{o.title}</h3>
+            <p class="reg__summary">{o.summary}</p>
+            <ul class="reg__list">
+              {o.points.map((p) => (
+                <li class:list={[`is-${p.kind}`]}>{p.text}</li>
+              ))}
+            </ul>
+            <p class="reg__for">
+              <b>Кому подходит:</b> {o.forWhom}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="reg__cta" data-reveal>
+      <p>Не уверены, какой вариант выгоднее именно вам? Посчитаем оба и расскажем про все нюансы оформления.</p>
+      <button class="btn" type="button" data-open-lead data-intent="registration">Получить консультацию</button>
+    </div>
+
+    <p class="price-note reg__note">{registration.disclaimer}</p>
+  </div>
+</section>
+
+<style>
+  .reg__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .reg__card {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: var(--radius);
+    background: var(--bg-alt);
+  }
+
+  .reg__tag {
+    align-self: flex-start;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .reg__title {
+    margin-top: 24px;
+    font-size: clamp(26px, 3vw, 36px);
+  }
+
+  .reg__summary {
+    margin-top: 12px;
+    color: var(--ink-2);
+  }
+
+  .reg__list {
+    list-style: none;
+    margin: 28px 0;
+    padding: 0;
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    flex: 1;
+  }
+
+  .reg__list li {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .reg__list li::before {
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .reg__list .is-plus::before {
+    content: '+';
+    background: var(--ok);
+  }
+
+  .reg__list .is-note::before {
+    content: '!';
+    background: #d97706;
+  }
+
+  .reg__for {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .reg__for b {
+    color: var(--ink);
+  }
+
+  .reg__cta {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 32px;
+    padding: clamp(24px, 3vw, 36px) clamp(28px, 4vw, 48px);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .reg__cta p {
+    max-width: 52ch;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .reg__note {
+    margin-top: 24px;
+    max-width: 80ch;
+  }
+
+  @media (max-width: 860px) {
+    .reg__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

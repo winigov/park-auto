@@ -1,0 +1,122 @@
+---
+import type { CarModel } from '../data/types';
+
+interface Props {
+  specs: CarModel['specs'];
+  name: string;
+  note: string;
+}
+const { specs, name, note } = Astro.props;
+const [first, ...rest] = specs;
+---
+
+<section class="specs section" id="specs">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Характеристики</span>
+      <h2 class="h-section">Технические характеристики {name}</h2>
+    </div>
+
+    <div class="specs__group" data-reveal>
+      <h3 class="specs__title">{first.group}</h3>
+      <dl>
+        {
+          first.items.map((s) => (
+            <div>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <details class="specs__more">
+      <summary><span class="btn btn--ghost">Все характеристики</span></summary>
+      {
+        rest.map((g) => (
+          <div class="specs__group">
+            <h3 class="specs__title">{g.group}</h3>
+            <dl>
+              {g.items.map((s) => (
+                <div>
+                  <dt>{s.label}</dt>
+                  <dd>{s.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+    </details>
+    <p class="price-note specs__note">{note}</p>
+  </div>
+</section>
+
+<style>
+  .specs__group {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 3fr;
+    gap: 24px 48px;
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .specs__title {
+    font-size: 20px;
+  }
+
+  .specs__group dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 28px 32px;
+  }
+
+  .specs__group dt {
+    font-size: 14px;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+
+  .specs__group dd {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .specs__more summary {
+    list-style: none;
+    margin-top: 24px;
+    cursor: pointer;
+  }
+
+  .specs__more summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .specs__more[open] summary {
+    display: none;
+  }
+
+  .specs__note {
+    margin-top: 32px;
+    max-width: 80ch;
+  }
+
+  @media (max-width: 860px) {
+    .specs__group {
+      grid-template-columns: 1fr;
+    }
+
+    .specs__group dl {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px 16px;
+    }
+
+    .specs__group dd {
+      font-size: 16px;
+    }
+  }
+</style>

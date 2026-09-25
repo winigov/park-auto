@@ -1,0 +1,119 @@
+---
+import type { Photo } from '../data/types';
+import Media from './Media.astro';
+
+interface Props {
+  photos: Photo[];
+}
+const { photos } = Astro.props;
+---
+
+<section class="gallery" aria-label="Галерея">
+  <div class="container gallery__head" data-reveal>
+    <h2 class="h-card">Галерея</h2>
+    <div class="gallery__nav">
+      <button type="button" data-gallery-prev aria-label="Назад">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <button type="button" data-gallery-next aria-label="Вперёд">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+    </div>
+  </div>
+  <ul class="gallery__track" data-gallery>
+    {
+      photos.map((p) => (
+        <li class="gallery__item">
+          <Media photo={p} sizes="(max-width: 720px) 86vw, 60vw" />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((track) => {
+    const section = track.closest('section')!;
+    const step = () => (track.firstElementChild as HTMLElement).offsetWidth + 16;
+    section.querySelector('[data-gallery-prev]')?.addEventListener('click', () =>
+      track.scrollBy({ left: -step(), behavior: 'smooth' }),
+    );
+    section.querySelector('[data-gallery-next]')?.addEventListener('click', () =>
+      track.scrollBy({ left: step(), behavior: 'smooth' }),
+    );
+  });
+</script>
+
+<style>
+  .gallery {
+    padding-bottom: clamp(72px, 10vw, 140px);
+  }
+
+  .gallery__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .gallery__nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  .gallery__nav button {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--bg-alt);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .gallery__nav button:hover {
+    background: var(--line);
+  }
+
+  .gallery__nav svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .gallery__track {
+    list-style: none;
+    margin: 0;
+    padding: 0 max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+    scrollbar-width: none;
+  }
+
+  .gallery__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery__item {
+    flex: 0 0 min(60vw, 820px);
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    scroll-snap-align: start;
+  }
+
+  @media (max-width: 720px) {
+    .gallery__item {
+      flex-basis: 86vw;
+      aspect-ratio: 4 / 3;
+    }
+
+    .gallery__nav {
+      display: none;
+    }
+  }
+</style>

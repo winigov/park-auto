@@ -1,0 +1,73 @@
+---
+import LeadForm from './LeadForm.astro';
+import Media from './Media.astro';
+import type { Photo } from '../data/types';
+
+interface Props {
+  model: string;
+  trims: { id: string; name: string }[];
+  photo: Photo;
+}
+const { model, trims, photo } = Astro.props;
+---
+
+<section class="lead-sec section section--dark" id="test-drive">
+  <div class="lead-sec__bg" aria-hidden="true">
+    <Media photo={photo} dark sizes="100vw" />
+  </div>
+  <div class="container lead-sec__grid">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Тест-драйв</span>
+      <h2 class="h-section">Почувствуйте {model} за рулём</h2>
+      <p class="lead">
+        Запишитесь на тест-драйв — подготовим автомобиль к вашему приезду, покажем все функции и рассчитаем
+        стоимость на учёте РФ и КР.
+      </p>
+    </div>
+    <div class="lead-sec__card" data-reveal>
+      <LeadForm id="section" model={model} trims={trims} dark />
+    </div>
+  </div>
+</section>
+
+<style>
+  .lead-sec {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .lead-sec__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.35;
+  }
+
+  .lead-sec__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--dark) 20%, rgb(8 9 11 / 0.4));
+  }
+
+  .lead-sec__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .lead-sec__card {
+    padding: clamp(24px, 4vw, 40px);
+    border-radius: var(--radius);
+    background: var(--dark-2);
+    border: 1px solid var(--dark-line);
+  }
+
+  @media (max-width: 900px) {
+    .lead-sec__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+import { site } from '../config/site';
+import { path } from '../config/paths';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LeadModal from '../components/LeadModal.astro';
+import MobileBar from '../components/MobileBar.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  jsonLd?: object[];
+  nav?: { href: string; label: string }[];
+  /** Подпись для формы по умолчанию (например, «Geely Galaxy M7») */
+  model?: string;
+  trims?: { id: string; name: string }[];
+}
+
+const { title, description, ogImage, jsonLd = [], nav = [], model = '', trims = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ymId = site.metrikaId;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={path('/favicon.svg')} type="image/svg+xml" />
+    <meta name="theme-color" content="#08090b" />
+    <meta name="format-detection" content="telephone=no" />
+    {site.demo && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
+
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+
+    {
+      ymId && (
+        <script is:inline define:vars={{ ymId }}>
+          (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
+            m[i].l = 1 * new Date();
+            k = e.createElement(t); a = e.getElementsByTagName(t)[0];
+            k.async = 1; k.src = r; a.parentNode.insertBefore(k, a);
+          })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+          window.ym(ymId, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true });
+          window.__ymId = ymId;
+        </script>
+      )
+    }
+  </head>
+  <body class:list={{ 'is-demo': site.demo }}>
+    {
+      site.demo && (
+        <div class="demo-bar" role="note">
+          <span class="demo-bar__full">
+            Прототип сайта для «Парк Авто». Цены и контакты предварительные, заявки не отправляются.
+          </span>
+          <span class="demo-bar__short">Прототип сайта · заявки не отправляются</span>
+        </div>
+      )
+    }
+    <Header nav={nav} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <MobileBar />
+    <LeadModal model={model} trims={trims} />
+
+    <script>
+      import '../scripts/lead';
+      import '../scripts/ui';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+---
+interface Props {
+  items: { q: string; a: string }[];
+}
+const { items } = Astro.props;
+---
+
+<section class="faq section section--alt" id="faq">
+  <div class="container faq__grid">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Вопросы и ответы</span>
+      <h2 class="h-section">Частые вопросы</h2>
+      <p class="lead">Не нашли ответ? Позвоните или напишите в WhatsApp — ответим за пару минут.</p>
+    </div>
+    <div class="faq__list">
+      {
+        items.map((item) => (
+          <details class="faq__item" data-reveal>
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: clamp(24px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .faq__item summary {
+    position: relative;
+    list-style: none;
+    padding: 24px 48px 24px 0;
+    font-size: clamp(18px, 1.6vw, 20px);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item summary::after {
+    content: '';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    background:
+      linear-gradient(currentColor, currentColor) center / 14px 2px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 2px 14px no-repeat;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .faq__item[open] summary::after {
+    transform: rotate(45deg);
+  }
+
+  .faq__item p {
+    padding: 0 48px 24px 0;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .faq__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

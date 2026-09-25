@@ -1,0 +1,64 @@
+---
+import type { CarModel } from '../data/types';
+
+interface Props {
+  tech: CarModel['tech'];
+}
+const { tech } = Astro.props;
+---
+
+<section class="tech section section--dark" id="tech">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Технологии</span>
+      <h2 class="h-section">{tech.title}</h2>
+      <p class="lead">{tech.text}</p>
+    </div>
+
+    <ul class="tech__grid">
+      {
+        tech.points.map((p) => (
+          <li class="tech__card" data-reveal>
+            <p class="tech__value">{p.value}</p>
+            <p class="tech__label">{p.label}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .tech__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .tech__card {
+    padding: clamp(24px, 3vw, 36px);
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+    border: 1px solid var(--dark-line);
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .tech__value {
+    font-size: clamp(30px, 3.4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+
+  .tech__label {
+    color: var(--on-dark-2);
+    font-size: 16px;
+  }
+</style>

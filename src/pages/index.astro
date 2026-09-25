@@ -1,0 +1,185 @@
+---
+import Base from '../layouts/Base.astro';
+import Media from '../components/Media.astro';
+import Registration from '../components/Registration.astro';
+import WhyUs from '../components/WhyUs.astro';
+import LeadSection from '../components/LeadSection.astro';
+import Contacts from '../components/Contacts.astro';
+import { models } from '../data/models';
+import { site } from '../config/site';
+import { absUrl, path } from '../config/paths';
+import { formatPrice, minPrice } from '../scripts/format';
+
+const nav = [
+  { href: '#models', label: 'Модели' },
+  { href: '#registration', label: 'Учёт РФ/КР' },
+  { href: '#about', label: 'О нас' },
+  { href: '#contacts', label: 'Контакты' },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'AutoDealer',
+    '@id': absUrl('/#dealer', Astro.site),
+    name: site.name,
+    telephone: site.phone,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.city,
+      addressRegion: site.region,
+      streetAddress: site.address,
+      addressCountry: 'RU',
+    },
+    url: absUrl('/', Astro.site),
+  },
+];
+---
+
+<Base
+  title={`Китайские автомобили в ${site.city === 'Махачкала' ? 'Махачкале' : site.city} — учёт РФ и КР | ${site.name}`}
+  description={`${site.name}: новые китайские автомобили в наличии в Махачкале. На учёте РФ и Кыргызстана, кредит, трейд-ин, тест-драйв.`}
+  jsonLd={jsonLd}
+  nav={nav}
+>
+  <section class="home-hero section--dark">
+    <div class="container">
+      <p class="eyebrow">{site.name} · {site.city}</p>
+      <h1 class="h-display">Китайские автомобили<br />на учёте РФ и КР</h1>
+      <p class="lead">Новые автомобили в наличии, честный расчёт двух вариантов учёта, кредит и трейд-ин.</p>
+      <div class="home-hero__cta">
+        <a class="btn" href="#models">Смотреть модели</a>
+        <button class="btn btn--ghost" type="button" data-open-lead data-intent="price">Подобрать автомобиль</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="models">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Модельный ряд</span>
+        <h2 class="h-section">В наличии</h2>
+      </div>
+      <ul class="models">
+        {
+          models.map((m) => (
+            <li>
+              <a class="model-card" href={path(`/${m.slug}/`)}>
+                <div class="model-card__img">
+                  <Media photo={m.hero} sizes="(max-width: 720px) 100vw, 50vw" dark />
+                </div>
+                <div class="model-card__body">
+                  <p class="model-card__type">{m.bodyType} · {m.powertrain}</p>
+                  <h3 class="model-card__name">
+                    {m.brand} {m.name}
+                  </h3>
+                  <p class="model-card__price">
+                    от {formatPrice(Math.min(minPrice(m.trims, 'rf'), minPrice(m.trims, 'kg')))}
+                  </p>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+        <li class="models__soon">
+          <p>Скоро здесь появятся другие модели</p>
+          <button class="btn btn--ghost btn--sm" type="button" data-open-lead data-intent="price">
+            Подобрать под заказ
+          </button>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <Registration />
+  <WhyUs />
+  <LeadSection model="автомобиль мечты" trims={[]} photo={models[0].ctaPhoto} />
+  <Contacts />
+</Base>
+
+<style>
+  .home-hero {
+    min-height: 88svh;
+    display: flex;
+    align-items: flex-end;
+    padding: calc(var(--header-h) + 64px) 0 clamp(56px, 9vh, 110px);
+    background:
+      radial-gradient(90% 70% at 80% 10%, #1b2436 0%, transparent 60%),
+      var(--dark);
+  }
+
+  .home-hero .lead {
+    margin-top: 28px;
+  }
+
+  .home-hero__cta {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .models {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
+    gap: 16px;
+  }
+
+  .model-card {
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--dark);
+    color: var(--on-dark);
+    text-decoration: none;
+  }
+
+  .model-card__img {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .model-card__img :global(.media) {
+    transition: transform 0.8s var(--ease);
+  }
+
+  .model-card:hover .model-card__img :global(.media) {
+    transform: scale(1.04);
+  }
+
+  .model-card__body {
+    padding: 24px 28px 28px;
+  }
+
+  .model-card__type {
+    font-size: 14px;
+    color: var(--on-dark-2);
+  }
+
+  .model-card__name {
+    margin-top: 6px;
+    font-size: clamp(28px, 3vw, 36px);
+  }
+
+  .model-card__price {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .models__soon {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 16px;
+    min-height: 240px;
+    padding: 32px;
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    color: var(--ink-2);
+    text-align: center;
+  }
+</style>

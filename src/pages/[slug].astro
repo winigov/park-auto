@@ -1,0 +1,114 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Stats from '../components/Stats.astro';
+import Story from '../components/Story.astro';
+import Interior from '../components/Interior.astro';
+import Tech from '../components/Tech.astro';
+import Trims from '../components/Trims.astro';
+import Registration from '../components/Registration.astro';
+import Credit from '../components/Credit.astro';
+import Specs from '../components/Specs.astro';
+import Gallery from '../components/Gallery.astro';
+import WhyUs from '../components/WhyUs.astro';
+import Faq from '../components/Faq.astro';
+import LeadSection from '../components/LeadSection.astro';
+import Contacts from '../components/Contacts.astro';
+import { models } from '../data/models';
+import { site } from '../config/site';
+import { absUrl } from '../config/paths';
+import { maxPrice, minPrice } from '../scripts/format';
+import type { CarModel } from '../data/types';
+
+export function getStaticPaths() {
+  return models.map((model) => ({ params: { slug: model.slug }, props: { model } }));
+}
+
+const { model } = Astro.props as { model: CarModel };
+const fullName = `${model.brand} ${model.name}`;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const nav = [
+  { href: '#story', label: 'Модель' },
+  { href: '#trims', label: 'Цены' },
+  { href: '#registration', label: 'Учёт РФ/КР' },
+  { href: '#credit', label: 'Кредит' },
+  { href: '#contacts', label: 'Контакты' },
+];
+
+const dealer = {
+  '@type': 'AutoDealer',
+  '@id': absUrl('/#dealer', Astro.site),
+  name: site.name,
+  telephone: site.phone,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.city,
+    addressRegion: site.region,
+    streetAddress: site.address,
+    addressCountry: 'RU',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lon },
+  url: absUrl('/', Astro.site),
+};
+
+const jsonLd = [
+  { '@context': 'https://schema.org', ...dealer },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Car',
+    name: fullName,
+    brand: { '@type': 'Brand', name: model.brand },
+    model: model.name,
+    bodyType: model.bodyType,
+    modelDate: String(model.year),
+    url: pageUrl,
+    image: model.hero.src ? new URL(model.hero.src.src, Astro.site).href : undefined,
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'RUB',
+      lowPrice: Math.min(minPrice(model.trims, 'rf'), minPrice(model.trims, 'kg')),
+      highPrice: Math.max(maxPrice(model.trims, 'rf'), maxPrice(model.trims, 'kg')),
+      offerCount: model.trims.length * 2,
+      availability: 'https://schema.org/InStock',
+      seller: { '@id': dealer['@id'] },
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: model.faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+
+const trimOptions = model.trims.map((t) => ({ id: t.id, name: t.name }));
+---
+
+<Base
+  title={model.seo.title}
+  description={model.seo.description}
+  ogImage={model.hero.src?.src}
+  jsonLd={jsonLd}
+  nav={nav}
+  model={fullName}
+  trims={trimOptions}
+>
+  <Hero model={model} />
+  <Stats stats={model.stats} note={model.statsNote} />
+  <Story chapters={model.chapters} />
+  <Interior interior={model.interior} />
+  <Gallery photos={model.gallery} />
+  <Tech tech={model.tech} />
+  <Trims trims={model.trims} colors={model.colors} />
+  <Registration />
+  <Credit trims={model.trims} />
+  <Specs specs={model.specs} name={fullName} note={model.specsNote} />
+  <WhyUs />
+  <Faq items={model.faq} />
+  <LeadSection model={fullName} trims={trimOptions} photo={model.ctaPhoto} />
+  <Contacts />
+</Base>

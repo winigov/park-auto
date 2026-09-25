@@ -1,0 +1,77 @@
+---
+import type { CarModel } from '../data/types';
+import Media from './Media.astro';
+
+interface Props {
+  interior: CarModel['interior'];
+}
+const { interior } = Astro.props;
+---
+
+<section class="interior section" id="interior">
+  <div class="container section-head section-head--center" data-reveal>
+    <span class="eyebrow">Салон</span>
+    <h2 class="h-section">{interior.title}</h2>
+    <p class="lead">{interior.text}</p>
+  </div>
+
+  <div class="interior__stage" data-expand>
+    <div class="interior__img" data-expand-target>
+      <Media photo={interior.photo} sizes="100vw" />
+    </div>
+  </div>
+
+  <div class="container">
+    <ul class="interior__features">
+      {
+        interior.features.map((f) => (
+          <li data-reveal>
+            <h3 class="h-card">{f.title}</h3>
+            <p>{f.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .interior {
+    background: var(--bg);
+  }
+
+  .interior__stage {
+    overflow: hidden;
+  }
+
+  .interior__img {
+    height: min(92vh, 960px);
+    overflow: hidden;
+    will-change: clip-path;
+  }
+
+  .interior__features {
+    list-style: none;
+    margin: clamp(48px, 7vw, 96px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 40px 32px;
+  }
+
+  .interior__features li {
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+  }
+
+  .interior__features p {
+    margin-top: 10px;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 720px) {
+    .interior__img {
+      height: 70vh;
+    }
+  }
+</style>

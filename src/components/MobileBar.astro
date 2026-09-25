@@ -1,0 +1,82 @@
+---
+import { site } from '../config/site';
+---
+
+<nav class="mbar" aria-label="Быстрая связь" data-mbar>
+  <a class="mbar__icon" href={site.phoneHref} aria-label="Позвонить">
+    <svg viewBox="0 0 24 24"
+      ><path
+        d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"></path></svg
+    >
+  </a>
+  <a class="mbar__icon mbar__icon--wa" href={site.whatsapp} target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"
+      ><path
+        d="M4 20l1.3-4.2A8.5 8.5 0 1 1 8.4 19zM9 8.5c0 3.6 2.9 6.5 6.5 6.5l1-1.5-2-1-1 1a4.6 4.6 0 0 1-3-3l1-1-1-2z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linejoin="round"></path></svg
+    >
+  </a>
+  <button class="btn mbar__cta" type="button" data-open-lead data-intent="test-drive">Тест-драйв</button>
+</nav>
+
+<style>
+  .mbar {
+    display: none;
+  }
+
+  @media (max-width: 720px) {
+    .mbar {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 40;
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.86);
+      backdrop-filter: saturate(180%) blur(18px);
+      -webkit-backdrop-filter: saturate(180%) blur(18px);
+      box-shadow: 0 12px 40px rgb(0 0 0 / 0.22);
+      transform: translateY(0);
+      transition: transform 0.4s var(--ease);
+    }
+
+    .mbar.is-hidden {
+      transform: translateY(calc(100% + 24px));
+    }
+
+    .mbar__icon {
+      flex: 0 0 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--bg-alt);
+      color: var(--ink);
+    }
+
+    .mbar__icon--wa {
+      background: #25d366;
+      color: #fff;
+    }
+
+    .mbar__icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mbar__cta {
+      flex: 1;
+      min-height: 48px;
+    }
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+import { path } from '../config/paths';
+interface Props {
+  id: string;
+  model?: string;
+  trims?: { id: string; name: string }[];
+  dark?: boolean;
+  submitLabel?: string;
+}
+const { id, model = '', trims = [], dark = false, submitLabel = 'Записаться на тест-драйв' } = Astro.props;
+---
+
+<form class:list={['lead-form', { 'lead-form--dark': dark }]} data-lead-form novalidate>
+  <input type="hidden" name="model" value={model} />
+  <input type="hidden" name="intent" value="test-drive" />
+  <div class="lead-form__hp" aria-hidden="true">
+    <label>Не заполняйте <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="lead-form__fields">
+    <label class="field">
+      <span>Имя</span>
+      <input type="text" name="name" autocomplete="given-name" placeholder="Как к вам обращаться" required />
+    </label>
+    <label class="field">
+      <span>Телефон</span>
+      <input
+        type="tel"
+        name="phone"
+        autocomplete="tel"
+        inputmode="tel"
+        placeholder="+7 (___) ___-__-__"
+        required
+        data-phone
+      />
+      <small class="field__error">Проверьте номер телефона</small>
+    </label>
+    {
+      trims.length > 0 && (
+        <label class="field">
+          <span>Комплектация</span>
+          <select name="trim">
+            <option value="">Пока не выбрал(а)</option>
+            {trims.map((t) => (
+              <option value={t.id}>{t.name}</option>
+            ))}
+          </select>
+        </label>
+      )
+    }
+  </div>
+
+  <label class="consent">
+    <input type="checkbox" name="consent" required />
+    <span>
+      Согласен(на) на обработку персональных данных в соответствии с
+      <a href={path('/privacy/')} target="_blank">политикой конфиденциальности</a>
+    </span>
+  </label>
+
+  <button class="btn btn--block lead-form__submit" type="submit" id={`${id}-submit`}>{submitLabel}</button>
+  <p class="lead-form__status" role="status" aria-live="polite"></p>
+
+  <div class="lead-form__done" hidden>
+    <svg viewBox="0 0 48 48" aria-hidden="true"
+      ><circle cx="24" cy="24" r="22" fill="var(--ok)"></circle><path
+        d="M14 25l7 7 13-15"
+        fill="none"
+        stroke="#fff"
+        stroke-width="3.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path></svg
+    >
+    <p class="lead-form__done-title">Заявка принята</p>
+    <p>Менеджер перезвонит в течение 15 минут в рабочее время.</p>
+  </div>
+</form>
+
+<style>
+  .lead-form {
+    position: relative;
+    display: grid;
+    gap: 18px;
+    --f-bg: #fff;
+    --f-line: var(--line);
+    --f-ink: var(--ink);
+    --f-muted: var(--ink-2);
+    --f-surface: #fff;
+  }
+
+  .lead-form--dark {
+    --f-bg: var(--dark-3);
+    --f-surface: var(--dark-2);
+    --f-line: var(--dark-line);
+    --f-ink: var(--on-dark);
+    --f-muted: var(--on-dark-2);
+  }
+
+  .lead-form__hp {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .lead-form__fields {
+    display: grid;
+    gap: 14px;
+  }
+
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .field > span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--f-muted);
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    height: 56px;
+    padding: 0 18px;
+    border: 1.5px solid var(--f-line);
+    border-radius: var(--radius-sm);
+    background: var(--f-bg);
+    color: var(--f-ink);
+    font-size: 17px;
+    transition: border-color 0.2s;
+  }
+
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238a9099' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    background-size: 12px;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .field__error {
+    display: none;
+    color: var(--err);
+    font-size: 13px;
+  }
+
+  .field.is-invalid input {
+    border-color: var(--err);
+  }
+
+  .field.is-invalid .field__error {
+    display: block;
+  }
+
+  .consent {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--f-muted);
+    cursor: pointer;
+  }
+
+  .consent input {
+    flex: 0 0 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+
+  .consent.is-invalid {
+    color: var(--err);
+  }
+
+  .lead-form__submit {
+    min-height: 58px;
+    font-size: 17px;
+  }
+
+  .lead-form__submit[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .lead-form__status:empty {
+    display: none;
+  }
+
+  .lead-form__status {
+    font-size: 14px;
+    color: var(--err);
+  }
+
+  .lead-form__done {
+    position: absolute;
+    inset: -4px;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 10px;
+    text-align: center;
+    background: var(--f-surface);
+    color: var(--f-ink);
+  }
+
+  .lead-form__done[hidden] {
+    display: none;
+  }
+
+  .lead-form__done svg {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 8px;
+  }
+
+  .lead-form__done-title {
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .lead-form__done p:last-child {
+    color: var(--f-muted);
+  }
+</style>

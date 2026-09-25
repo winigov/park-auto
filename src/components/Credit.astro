@@ -1,0 +1,275 @@
+---
+import { site } from '../config/site';
+import type { Trim } from '../data/types';
+import { formatPrice } from '../scripts/format';
+
+interface Props {
+  trims: Trim[];
+}
+const { trims } = Astro.props;
+const options = trims.flatMap((t) => [
+  { value: t.prices.rf, label: `${t.name} · учёт РФ · ${formatPrice(t.prices.rf)}`, trim: t.id },
+  { value: t.prices.kg, label: `${t.name} · учёт КР · ${formatPrice(t.prices.kg)}`, trim: t.id },
+]);
+const { rate, maxTermMonths } = site.credit;
+const terms = [12, 24, 36, 48, 60, 72, 84].filter((m) => m <= maxTermMonths);
+---
+
+<section class="credit section section--alt" id="credit">
+  <div class="container credit__grid">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Кредит и трейд-ин</span>
+      <h2 class="h-section">Рассчитайте платёж за минуту</h2>
+      <p class="lead">
+        Работаем с банками-партнёрами и принимаем ваш автомобиль в зачёт. Одобрение — в день обращения.
+      </p>
+      <ul class="credit__perks">
+        <li>Первоначальный взнос — от {site.credit.minDownPercent}%</li>
+        <li>Срок — до {maxTermMonths / 12} лет</li>
+        <li>Трейд-ин: оценка за 30 минут</li>
+      </ul>
+    </div>
+
+    <form class="calc" data-calc data-rate={rate} data-reveal>
+      <label class="calc__row">
+        <span>Автомобиль</span>
+        <select name="price">
+          {options.map((o, i) => <option value={o.value} data-trim={o.trim} selected={i === 0}>{o.label}</option>)}
+        </select>
+      </label>
+
+      <label class="calc__row">
+        <span>Первоначальный взнос <output name="downOut">30%</output></span>
+        <input type="range" name="down" min={site.credit.minDownPercent} max="90" step="5" value="30" />
+      </label>
+
+      <fieldset class="calc__row calc__terms">
+        <legend>Срок, месяцев</legend>
+        <div>
+          {
+            terms.map((m) => (
+              <label>
+                <input type="radio" name="term" value={m} checked={m === 60} />
+                <span>{m}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div class="calc__result">
+        <p>Ежемесячный платёж</p>
+        <p class="calc__payment"><output name="payment">—</output></p>
+        <p class="calc__meta">Взнос <output name="downSum">—</output> · кредит <output name="loan">—</output></p>
+      </div>
+
+      <button class="btn btn--block" type="button" data-open-lead data-intent="credit">Получить одобрение</button>
+      <p class="price-note">
+        Расчёт ориентировочный, при ставке {rate.toLocaleString('ru-RU')}% годовых, и не является офертой. Кредит
+        предоставляют {site.credit.bank}; итоговые условия определяет банк.
+      </p>
+    </form>
+  </div>
+</section>
+
+<script>
+  const rub = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+  const money = (n: number) => `${rub.format(Math.round(n))} ₽`;
+
+  document.querySelectorAll<HTMLFormElement>('[data-calc]').forEach((form) => {
+    const rate = Number(form.dataset.rate) / 100 / 12;
+    const els = form.elements as HTMLFormControlsCollection & Record<string, any>;
+
+    const update = () => {
+      const price = Number(els.price.value);
+      const downPct = Number(els.down.value);
+      const term = Number((form.querySelector('input[name="term"]:checked') as HTMLInputElement).value);
+      const down = (price * downPct) / 100;
+      const loan = price - down;
+      const payment = rate > 0 ? (loan * rate) / (1 - Math.pow(1 + rate, -term)) : loan / term;
+
+      els.downOut.value = `${downPct}%`;
+      els.downSum.value = money(down);
+      els.loan.value = money(loan);
+      els.payment.value = money(payment);
+      form.style.setProperty('--fill', `${(downPct / 90) * 100}%`);
+
+      const trim = (els.price as HTMLSelectElement).selectedOptions[0]?.dataset.trim ?? '';
+      form.querySelector<HTMLElement>('[data-open-lead]')!.dataset.trim = trim;
+    };
+
+    form.addEventListener('input', update);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    update();
+  });
+</script>
+
+<style>
+  .credit__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .credit__perks {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    font-weight: 600;
+  }
+
+  .credit__perks li::before {
+    content: '—';
+    margin-right: 10px;
+    color: var(--accent);
+  }
+
+  .calc {
+    display: grid;
+    gap: 24px;
+    padding: clamp(24px, 4vw, 40px);
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.25);
+  }
+
+  .calc__row {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .calc__row > span,
+  .calc__row legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-2);
+    padding: 0;
+    margin-bottom: 10px;
+  }
+
+  .calc__row output {
+    color: var(--ink);
+    font-weight: 800;
+  }
+
+  .calc select {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    font-size: 15px;
+    text-overflow: ellipsis;
+  }
+
+  .calc input[type='range'] {
+    width: 100%;
+    height: 6px;
+    appearance: none;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--accent) var(--fill, 33%), var(--line) var(--fill, 33%));
+    cursor: pointer;
+  }
+
+  .calc input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 4px 12px rgb(0 0 0 / 0.2);
+  }
+
+  .calc input[type='range']::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 4px 12px rgb(0 0 0 / 0.2);
+  }
+
+  .calc__terms div {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .calc__terms label {
+    position: relative;
+  }
+
+  .calc__terms input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .calc__terms span {
+    display: grid;
+    place-items: center;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--bg-alt);
+    font-weight: 700;
+    font-size: 15px;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  .calc__terms input:checked + span {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .calc__terms input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .calc__result {
+    padding: 20px 0 4px;
+    border-top: 1px solid var(--line);
+  }
+
+  .calc__result > p:first-child {
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .calc__payment {
+    font-size: clamp(36px, 4.4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .calc__meta {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .credit__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

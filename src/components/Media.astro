@@ -1,0 +1,84 @@
+---
+import { Picture } from 'astro:assets';
+import type { Photo } from '../data/types';
+
+interface Props {
+  photo: Photo;
+  sizes?: string;
+  priority?: boolean;
+  class?: string;
+  /** Тёмный плейсхолдер для тёмных секций */
+  dark?: boolean;
+}
+
+const { photo, sizes = '100vw', priority = false, class: className, dark = false } = Astro.props;
+const widths = [640, 960, 1280, 1920, 2560];
+---
+
+{
+  photo.src ? (
+    <Picture
+      src={photo.src}
+      alt={photo.alt}
+      formats={['avif', 'webp']}
+      widths={widths.filter((w) => w <= photo.src!.width)}
+      sizes={sizes}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      class:list={['media', className]}
+      pictureAttributes={{ class: 'media-picture' }}
+      style={photo.focus ? `object-position:${photo.focus}` : undefined}
+    />
+  ) : (
+    <div class:list={['media media--placeholder', { 'media--dark': dark }, className]} role="img" aria-label={photo.alt}>
+      <svg viewBox="0 0 240 90" aria-hidden="true">
+        <path
+          d="M14 64c0-8 3-13 12-15l30-6 26-17c7-5 15-7 24-7h36c9 0 16 3 22 8l20 16 26 5c9 2 16 8 16 17v5c0 3-2 5-5 5h-14M62 74h98M34 74H20c-3 0-6-2-6-5v-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <circle cx="48" cy="72" r="12" fill="none" stroke="currentColor" stroke-width="2.5" />
+        <circle cx="178" cy="72" r="12" fill="none" stroke="currentColor" stroke-width="2.5" />
+      </svg>
+      <span>{photo.shot}</span>
+    </div>
+  )
+}
+
+<style>
+  .media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media--placeholder {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+    color: #9aa1aa;
+    background:
+      radial-gradient(120% 90% at 30% 20%, #ffffff 0%, transparent 60%),
+      linear-gradient(160deg, #e9ecf0, #cfd4db);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .media--placeholder svg {
+    width: min(46%, 260px);
+    opacity: 0.8;
+  }
+
+  .media--dark {
+    color: #59606a;
+    background:
+      radial-gradient(120% 90% at 70% 30%, #2a2f37 0%, transparent 65%),
+      linear-gradient(160deg, #15181c, #0b0c0e);
+  }
+</style>

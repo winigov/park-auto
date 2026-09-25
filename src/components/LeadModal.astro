@@ -1,0 +1,91 @@
+---
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  model: string;
+  trims: { id: string; name: string }[];
+}
+const { model, trims } = Astro.props;
+---
+
+<dialog class="lead-modal" data-lead-modal aria-labelledby="lead-modal-title">
+  <div class="lead-modal__box">
+    <button class="lead-modal__close" type="button" data-close-lead aria-label="Закрыть">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+    </button>
+    <p class="eyebrow" data-lead-eyebrow>{model || 'Парк Авто'}</p>
+    <h2 class="lead-modal__title" id="lead-modal-title" data-lead-title>Записаться на тест-драйв</h2>
+    <p class="lead-modal__text" data-lead-text>Оставьте телефон — подберём удобное время и подготовим автомобиль.</p>
+    <LeadForm id="modal" model={model} trims={trims} />
+  </div>
+</dialog>
+
+<style>
+  .lead-modal {
+    width: min(480px, calc(100% - 24px));
+    max-height: calc(100dvh - 24px);
+    padding: 0;
+    border: 0;
+    border-radius: 24px;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 40px 120px rgb(0 0 0 / 0.35);
+    overflow: auto;
+  }
+
+  .lead-modal::backdrop {
+    background: rgb(8 9 11 / 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .lead-modal[open] {
+    animation: modal-in 0.35s var(--ease);
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+    }
+  }
+
+  .lead-modal__box {
+    position: relative;
+    padding: clamp(28px, 5vw, 40px);
+    background: #fff;
+  }
+
+  .lead-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--bg-alt);
+    cursor: pointer;
+  }
+
+  .lead-modal__close svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .lead-modal__title {
+    font-size: clamp(26px, 4vw, 32px);
+    padding-right: 36px;
+  }
+
+  .lead-modal__text {
+    margin: 12px 0 24px;
+    color: var(--ink-2);
+  }
+
+  .lead-modal .eyebrow {
+    margin-bottom: 10px;
+  }
+</style>

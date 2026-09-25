@@ -1,0 +1,289 @@
+---
+import type { Trim } from '../data/types';
+import { formatPrice } from '../scripts/format';
+
+interface Props {
+  trims: Trim[];
+  colors: { name: string; hex: string }[];
+}
+const { trims, colors } = Astro.props;
+---
+
+<section class="trims section section--alt" id="trims">
+  <div class="container">
+    <div class="trims__head">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Комплектации и цены</span>
+        <h2 class="h-section">Выберите свою версию</h2>
+        <p class="lead">Цены зависят от того, на каком учёте вы берёте автомобиль. Разницу объясняем ниже.</p>
+      </div>
+
+      <fieldset class="trims__switch" data-reveal>
+        <legend class="visually-hidden">Учёт автомобиля</legend>
+        <label>
+          <input type="radio" name="reg" value="rf" checked />
+          <span>Учёт РФ</span>
+        </label>
+        <label>
+          <input type="radio" name="reg" value="kg" />
+          <span>Учёт КР</span>
+        </label>
+      </fieldset>
+    </div>
+
+    <ul class="trims__grid">
+      {
+        trims.map((t) => (
+          <li class:list={['trim', { 'trim--popular': t.popular }]} data-reveal>
+            {t.popular && <span class="trim__flag">Выбор покупателей</span>}
+            <h3 class="trim__name">{t.name}</h3>
+            <p class="trim__sub">{t.subtitle}</p>
+            <p class="trim__price">
+              <span class="trim__price-rf">{formatPrice(t.prices.rf)}</span>
+              <span class="trim__price-kg">{formatPrice(t.prices.kg)}</span>
+            </p>
+            <ul class="trim__features">
+              {t.features.map((f) => (
+                <li>{f}</li>
+              ))}
+            </ul>
+            <button
+              class:list={['btn btn--block', { 'btn--ghost': !t.popular }]}
+              type="button"
+              data-open-lead
+              data-intent="price"
+              data-trim={t.id}
+            >
+              Получить предложение
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="trims__colors" data-reveal>
+      <p class="trims__colors-title">Цвета кузова</p>
+      <ul>
+        {
+          colors.map((c) => (
+            <li>
+              <span class="swatch" style={`--c:${c.hex}`} />
+              {c.name}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="price-note trims__note">
+      Цены предварительные и носят информационный характер, не являются публичной офертой. Точную стоимость
+      и наличие уточняйте у менеджера.
+    </p>
+  </div>
+</section>
+
+<style>
+  .trims__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0 32px;
+  }
+
+  .trims__switch {
+    display: inline-flex;
+    padding: 5px;
+    margin: 0 0 clamp(40px, 6vw, 72px);
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .trims__switch label {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .trims__switch input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .trims__switch span {
+    display: block;
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink-2);
+    transition:
+      background-color 0.25s,
+      color 0.25s;
+  }
+
+  .trims__switch input:checked + span {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .trims__switch input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .trims__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 1180px) {
+    .trims__grid {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 28px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .trims__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .trim {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(24px, 3vw, 36px);
+    border-radius: var(--radius);
+    background: #fff;
+  }
+
+  .trim--popular {
+    box-shadow:
+      0 0 0 2px var(--accent),
+      0 24px 60px -24px rgb(47 107 255 / 0.35);
+  }
+
+  .trim__flag {
+    position: absolute;
+    top: -13px;
+    left: 28px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .trim__name {
+    font-size: 26px;
+  }
+
+  .trim__sub {
+    margin-top: 6px;
+    color: var(--ink-2);
+    font-size: 15px;
+  }
+
+  .trim__price {
+    margin: 24px 0;
+    font-size: clamp(26px, 2.3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  .trim__price-kg {
+    display: none;
+  }
+
+  .trims:has(input[value='kg']:checked) .trim__price-rf {
+    display: none;
+  }
+
+  .trims:has(input[value='kg']:checked) .trim__price-kg {
+    display: inline;
+  }
+
+  .trim__features {
+    list-style: none;
+    margin: 0 0 28px;
+    padding: 20px 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    font-size: 15px;
+    flex: 1;
+  }
+
+  .trim__features li {
+    display: flex;
+    gap: 10px;
+  }
+
+  .trim__features li::before {
+    content: '';
+    flex: 0 0 18px;
+    height: 18px;
+    margin-top: 2px;
+    border-radius: 50%;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.5l2.5 2.5L13 6.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+        center / contain no-repeat,
+      var(--ink);
+  }
+
+  .trims__colors {
+    margin-top: 48px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+  }
+
+  .trims__colors-title {
+    font-weight: 700;
+  }
+
+  .trims__colors ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .trims__colors li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 0.12),
+      inset 0 6px 8px rgb(255 255 255 / 0.25);
+  }
+
+  .trims__note {
+    margin-top: 32px;
+    max-width: 70ch;
+  }
+</style>
