@@ -4,7 +4,7 @@ import Logo from './Logo.astro';
 import Media from './Media.astro';
 import { path } from '../config/paths';
 import { models } from '../data/models';
-import { energyShort } from '../data/types';
+import { energyText } from '../data/types';
 import { formatPrice, minPrice } from '../scripts/format';
 
 interface Props {
@@ -40,7 +40,7 @@ const { nav } = Astro.props;
                         <span class="mm__brand">{m.brand}</span>
                         <span class="mm__name">{m.name}</span>
                         <span class="mm__meta">
-                          {energyShort[m.energy]} · от {formatPrice(minPrice(m.trims, 'kg'))}
+                          {energyText(m)} · от {formatPrice(minPrice(m.trims, 'kg'))}
                         </span>
                       </span>
                     </a>

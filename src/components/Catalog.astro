@@ -1,6 +1,6 @@
 ---
 import type { CarModel } from '../data/types';
-import { bodyLabels, energyShort } from '../data/types';
+import { bodyLabels, energiesOf, energyShort } from '../data/types';
 import { plural } from '../scripts/format';
 import ModelCard from './ModelCard.astro';
 import RegSwitch from './RegSwitch.astro';
@@ -28,7 +28,7 @@ const groups = [
     label: 'Мест',
     values: uniq(models.map((m) => (m.seats >= 6 ? '6+' : String(m.seats)))).sort().map((v) => ({ v, t: seatsLabel(v) })),
   },
-  { key: 'energy', label: 'Двигатель', values: uniq(models.map((m) => m.energy)).map((v) => ({ v, t: energyShort[v] })) },
+  { key: 'energy', label: 'Двигатель', values: uniq(models.flatMap(energiesOf)).map((v) => ({ v, t: energyShort[v] })) },
 ].filter((g) => g.values.length > 1);
 
 const showFilters = filters && groups.length > 0;
@@ -96,7 +96,8 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
     const apply = () => {
       let shown = 0;
       cards.forEach((card) => {
-        const ok = Object.entries(state).every(([k, v]) => v === 'all' || card.dataset[k] === v);
+        // у модели может быть несколько значений через пробел (например, data-energy="ice hev")
+        const ok = Object.entries(state).every(([k, v]) => v === 'all' || (card.dataset[k] ?? '').split(' ').includes(v));
         card.hidden = !ok;
         if (ok) shown++;
       });

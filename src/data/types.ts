@@ -82,6 +82,8 @@ export interface CarModel {
   year: number;
   body: BodyKind;
   energy: EnergyKind;
+  /** Если модель продаётся с разными двигателями (например, бензин и гибрид) — все варианты, для фильтра и карточки */
+  energyOptions?: EnergyKind[];
   seats: number;
   availability: 'in-stock' | 'on-order';
   isNew?: boolean;
@@ -126,3 +128,10 @@ export interface CarModel {
 }
 
 export const fullName = (m: Pick<CarModel, 'brand' | 'name'>) => `${m.brand} ${m.name}`;
+
+/** Все варианты двигателя модели */
+export const energiesOf = (m: Pick<CarModel, 'energy' | 'energyOptions'>): EnergyKind[] =>
+  m.energyOptions?.length ? m.energyOptions : [m.energy];
+
+/** Подпись двигателя для карточек: «Бензин / Гибрид» */
+export const energyText = (m: Pick<CarModel, 'energy' | 'energyOptions'>) => energiesOf(m).map((e) => energyShort[e]).join(' / ');

@@ -1,6 +1,6 @@
 ---
 import type { CarModel } from '../data/types';
-import { energyShort, fullName } from '../data/types';
+import { energyText, fullName } from '../data/types';
 import { site } from '../config/site';
 import { path } from '../config/paths';
 import { formatPrice, minPrice } from '../scripts/format';
@@ -15,7 +15,7 @@ const multi = models.length > 1;
 
 <section class:list={['showcase', { 'showcase--single': !multi }]} data-showcase data-hero aria-roledescription="карусель" aria-label="Модели в наличии">
   <h1 class="visually-hidden">
-    {site.name} — новые китайские автомобили в {site.city === 'Махачкала' ? 'Махачкале' : site.city} на учёте РФ и КР
+    {site.name} — новые автомобили из Китая в {site.city === 'Махачкала' ? 'Махачкале' : site.city} на учёте РФ и КР
   </h1>
 
   {
@@ -89,7 +89,7 @@ const multi = models.length > 1;
             <span class="tab__name">
               {m.brand} <b>{m.name}</b>
             </span>
-            <span class="tab__meta">{energyShort[m.energy]}</span>
+            <span class="tab__meta">{energyText(m)}</span>
           </button>
         ))}
       </div>

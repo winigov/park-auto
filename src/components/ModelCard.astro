@@ -1,6 +1,6 @@
 ---
 import type { CarModel } from '../data/types';
-import { bodyLabels, energyShort, fullName } from '../data/types';
+import { bodyLabels, energiesOf, energyText, fullName } from '../data/types';
 import { path } from '../config/paths';
 import { formatPrice, minPrice, plural } from '../scripts/format';
 import Media from './Media.astro';
@@ -14,7 +14,7 @@ const seats = `${m.seats} ${plural(m.seats, ['место', 'места', 'мес
 const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
 ---
 
-<article class="mc" data-card data-body={m.body} data-energy={m.energy} data-seats={seatsGroup}>
+<article class="mc" data-card data-body={m.body} data-energy={energiesOf(m).join(' ')} data-seats={seatsGroup}>
   <a class="mc__img" href={href} tabindex="-1" aria-hidden="true">
     <Media photo={m.hero} sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 400px" dark />
   </a>
@@ -26,7 +26,7 @@ const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
   </div>
 
   <div class="mc__body">
-    <p class="mc__meta">{bodyLabels[m.body]} · {energyShort[m.energy]} · {seats}</p>
+    <p class="mc__meta">{bodyLabels[m.body]} · {energyText(m)} · {seats}</p>
     <h3 class="mc__name">
       <a href={href}>
         <span class="mc__brand">{m.brand}</span>

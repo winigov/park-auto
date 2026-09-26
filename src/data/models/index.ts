@@ -1,10 +1,12 @@
 import type { CarModel } from '../types';
 import geelyM7 from './geely-m7';
 import liL9 from './li-l9';
+import geelyAtlas from './geely-atlas';
+import toyotaCamry from './toyota-camry';
 
 // Новая модель = файл в этой папке + строка в списке ниже.
 // Страница /<slug>/, карточка в каталоге, пункт в меню «Модели» и опции в формах появятся сами.
-const all: CarModel[] = [geelyM7, liL9];
+const all: CarModel[] = [geelyM7, liL9, geelyAtlas, toyotaCamry];
 
 export const models = [...all].sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
 
