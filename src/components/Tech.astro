@@ -2,7 +2,7 @@
 import type { CarModel } from '../data/types';
 
 interface Props {
-  tech: CarModel['tech'];
+  tech: NonNullable<CarModel['tech']>;
 }
 const { tech } = Astro.props;
 ---

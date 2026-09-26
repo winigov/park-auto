@@ -1,6 +1,7 @@
 ---
 import type { Trim } from '../data/types';
 import { formatPrice } from '../scripts/format';
+import RegSwitch from './RegSwitch.astro';
 
 interface Props {
   trims: Trim[];
@@ -9,7 +10,7 @@ interface Props {
 const { trims, colors } = Astro.props;
 ---
 
-<section class="trims section section--alt" id="trims">
+<section class="trims section section--alt reg-scope" id="trims">
   <div class="container">
     <div class="trims__head">
       <div class="section-head" data-reveal>
@@ -18,17 +19,7 @@ const { trims, colors } = Astro.props;
         <p class="lead">Цены зависят от того, на каком учёте вы берёте автомобиль. Разницу объясняем ниже.</p>
       </div>
 
-      <fieldset class="trims__switch" data-reveal>
-        <legend class="visually-hidden">Учёт автомобиля</legend>
-        <label>
-          <input type="radio" name="reg" value="rf" checked />
-          <span>Учёт РФ</span>
-        </label>
-        <label>
-          <input type="radio" name="reg" value="kg" />
-          <span>Учёт КР</span>
-        </label>
-      </fieldset>
+      <RegSwitch name="reg-trims" class="trims__reg" />
     </div>
 
     <ul class="trims__grid">
@@ -39,8 +30,8 @@ const { trims, colors } = Astro.props;
             <h3 class="trim__name">{t.name}</h3>
             <p class="trim__sub">{t.subtitle}</p>
             <p class="trim__price">
-              <span class="trim__price-rf">{formatPrice(t.prices.rf)}</span>
-              <span class="trim__price-kg">{formatPrice(t.prices.kg)}</span>
+              <span class="price-rf">{formatPrice(t.prices.rf)}</span>
+              <span class="price-kg">{formatPrice(t.prices.kg)}</span>
             </p>
             <ul class="trim__features">
               {t.features.map((f) => (
@@ -91,48 +82,8 @@ const { trims, colors } = Astro.props;
     gap: 0 32px;
   }
 
-  .trims__switch {
-    display: inline-flex;
-    padding: 5px;
-    margin: 0 0 clamp(40px, 6vw, 72px);
-    border: 0;
-    border-radius: 999px;
-    background: #fff;
-    box-shadow: inset 0 0 0 1px var(--line);
-  }
-
-  .trims__switch label {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .trims__switch input {
-    position: absolute;
-    opacity: 0;
-    inset: 0;
-    cursor: pointer;
-  }
-
-  .trims__switch span {
-    display: block;
-    padding: 11px 22px;
-    border-radius: 999px;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--ink-2);
-    transition:
-      background-color 0.25s,
-      color 0.25s;
-  }
-
-  .trims__switch input:checked + span {
-    background: var(--ink);
-    color: #fff;
-  }
-
-  .trims__switch input:focus-visible + span {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+  .trims__head :global(.trims__reg) {
+    margin-bottom: clamp(40px, 6vw, 72px);
   }
 
   .trims__grid {
@@ -200,18 +151,6 @@ const { trims, colors } = Astro.props;
     font-weight: 800;
     letter-spacing: -0.03em;
     white-space: nowrap;
-  }
-
-  .trim__price-kg {
-    display: none;
-  }
-
-  .trims:has(input[value='kg']:checked) .trim__price-rf {
-    display: none;
-  }
-
-  .trims:has(input[value='kg']:checked) .trim__price-kg {
-    display: inline;
   }
 
   .trim__features {

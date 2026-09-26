@@ -3,15 +3,17 @@ import { path } from '../config/paths';
 interface Props {
   id: string;
   model?: string;
+  /** Список моделей для выбора (на главной). Если задан — вместо скрытого поля будет select. */
+  models?: string[];
   trims?: { id: string; name: string }[];
   dark?: boolean;
   submitLabel?: string;
 }
-const { id, model = '', trims = [], dark = false, submitLabel = 'Записаться на тест-драйв' } = Astro.props;
+const { id, model = '', models = [], trims = [], dark = false, submitLabel = 'Записаться на тест-драйв' } = Astro.props;
 ---
 
 <form class:list={['lead-form', { 'lead-form--dark': dark }]} data-lead-form novalidate>
-  <input type="hidden" name="model" value={model} />
+  {models.length === 0 && <input type="hidden" name="model" value={model} data-default={model} />}
   <input type="hidden" name="intent" value="test-drive" />
   <div class="lead-form__hp" aria-hidden="true">
     <label>Не заполняйте <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
@@ -35,6 +37,19 @@ const { id, model = '', trims = [], dark = false, submitLabel = 'Записат�
       />
       <small class="field__error">Проверьте номер телефона</small>
     </label>
+    {
+      models.length > 0 && (
+        <label class="field">
+          <span>Модель</span>
+          <select name="model">
+            <option value="">Помогите выбрать</option>
+            {models.map((m) => (
+              <option value={m}>{m}</option>
+            ))}
+          </select>
+        </label>
+      )
+    }
     {
       trims.length > 0 && (
         <label class="field">

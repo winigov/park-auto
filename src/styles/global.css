@@ -262,6 +262,10 @@ p {
   background: #4ade80;
 }
 
+.badge--order::before {
+  background: #fbbf24;
+}
+
 .price-note {
   font-size: 13px;
   color: var(--ink-3);
@@ -274,6 +278,19 @@ p {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* Цены РФ/КР: переключаются RegSwitch внутри .reg-scope */
+.price-kg {
+  display: none;
+}
+
+.reg-scope:has(input[data-reg='kg']:checked) .price-rf {
+  display: none;
+}
+
+.reg-scope:has(input[data-reg='kg']:checked) .price-kg {
+  display: inline;
 }
 
 /* Плашка демо-версии */

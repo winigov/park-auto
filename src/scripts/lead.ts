@@ -109,6 +109,12 @@ document.addEventListener('click', (e) => {
   modal.querySelector('[data-lead-text]')!.textContent = copy[intent].text;
   const trim = form.elements.namedItem('trim') as HTMLSelectElement | null;
   if (trim) trim.value = trigger.dataset.trim ?? '';
+  // модель: кнопка в карточке каталога подставляет свою машину
+  const modelField = form.elements.namedItem('model') as HTMLSelectElement | HTMLInputElement | null;
+  const eyebrow = modal.querySelector<HTMLElement>('[data-lead-eyebrow]')!;
+  if (modelField instanceof HTMLSelectElement) modelField.value = trigger.dataset.model ?? '';
+  else if (modelField) modelField.value = trigger.dataset.model || modelField.dataset.default || '';
+  eyebrow.textContent = trigger.dataset.model || eyebrow.dataset.default || '';
   modal.showModal();
   document.documentElement.classList.add('modal-open');
   reachGoal('lead_open', { intent });

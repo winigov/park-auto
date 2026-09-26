@@ -1,16 +1,20 @@
 ---
 import { site } from '../config/site';
-import type { Trim } from '../data/types';
+import type { CarModel } from '../data/types';
+import { fullName } from '../data/types';
 import { formatPrice } from '../scripts/format';
 
 interface Props {
-  trims: Trim[];
+  models: CarModel[];
 }
-const { trims } = Astro.props;
-const options = trims.flatMap((t) => [
-  { value: t.prices.rf, label: `${t.name} · учёт РФ · ${formatPrice(t.prices.rf)}`, trim: t.id },
-  { value: t.prices.kg, label: `${t.name} · учёт КР · ${formatPrice(t.prices.kg)}`, trim: t.id },
-]);
+const { models } = Astro.props;
+const multi = models.length > 1;
+const first = models[0];
+const data = models.map((m) => ({
+  slug: m.slug,
+  name: fullName(m),
+  trims: m.trims.map((t) => ({ id: t.id, name: t.name, rf: t.prices.rf, kg: t.prices.kg })),
+}));
 const { rate, maxTermMonths } = site.credit;
 const terms = [12, 24, 36, 48, 60, 72, 84].filter((m) => m <= maxTermMonths);
 ---
@@ -31,12 +35,37 @@ const terms = [12, 24, 36, 48, 60, 72, 84].filter((m) => m <= maxTermMonths);
     </div>
 
     <form class="calc" data-calc data-rate={rate} data-reveal>
-      <label class="calc__row">
-        <span>Автомобиль</span>
-        <select name="price">
-          {options.map((o, i) => <option value={o.value} data-trim={o.trim} selected={i === 0}>{o.label}</option>)}
-        </select>
-      </label>
+      <script type="application/json" data-calc-data set:html={JSON.stringify(data)} />
+
+      {
+        multi && (
+          <label class="calc__row">
+            <span>Модель</span>
+            <select name="model">
+              {models.map((m) => (
+                <option value={m.slug}>{fullName(m)}</option>
+              ))}
+            </select>
+          </label>
+        )
+      }
+
+      <div class="calc__pair">
+        <label class="calc__row">
+          <span>Комплектация</span>
+          <select name="trim">
+            {first.trims.map((t) => <option value={t.id}>{t.name}</option>)}
+          </select>
+        </label>
+        <fieldset class="calc__row calc__terms calc__reg">
+          <legend>Учёт</legend>
+          <div>
+            <label><input type="radio" name="reg" value="rf" checked /><span>РФ</span></label>
+            <label><input type="radio" name="reg" value="kg" /><span>КР</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <p class="calc__price">Стоимость автомобиля: <output name="price">{formatPrice(first.trims[0].prices.rf)}</output></p>
 
       <label class="calc__row">
         <span>Первоначальный взнос <output name="downOut">30%</output></span>
@@ -63,7 +92,9 @@ const terms = [12, 24, 36, 48, 60, 72, 84].filter((m) => m <= maxTermMonths);
         <p class="calc__meta">Взнос <output name="downSum">—</output> · кредит <output name="loan">—</output></p>
       </div>
 
-      <button class="btn btn--block" type="button" data-open-lead data-intent="credit">Получить одобрение</button>
+      <button class="btn btn--block" type="button" data-open-lead data-intent="credit" data-model={fullName(first)}>
+        Получить одобрение
+      </button>
       <p class="price-note">
         Расчёт ориентировочный, при ставке {rate.toLocaleString('ru-RU')}% годовых, и не является офертой. Кредит
         предоставляют {site.credit.bank}; итоговые условия определяет банк.
@@ -73,31 +104,48 @@ const terms = [12, 24, 36, 48, 60, 72, 84].filter((m) => m <= maxTermMonths);
 </section>
 
 <script>
+  type CalcModel = { slug: string; name: string; trims: { id: string; name: string; rf: number; kg: number }[] };
+
   const rub = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
-  const money = (n: number) => `${rub.format(Math.round(n))} ₽`;
+  const money = (n: number) => `${rub.format(Math.round(n))}\u00a0₽`;
 
   document.querySelectorAll<HTMLFormElement>('[data-calc]').forEach((form) => {
     const rate = Number(form.dataset.rate) / 100 / 12;
+    const data: CalcModel[] = JSON.parse(form.querySelector('[data-calc-data]')!.textContent || '[]');
     const els = form.elements as HTMLFormControlsCollection & Record<string, any>;
+    const modelSel = form.querySelector<HTMLSelectElement>('select[name="model"]');
+    const trimSel = form.querySelector<HTMLSelectElement>('select[name="trim"]')!;
+    const leadBtn = form.querySelector<HTMLElement>('[data-open-lead]')!;
+
+    const currentModel = () => data.find((m) => m.slug === modelSel?.value) ?? data[0];
+
+    const fillTrims = () => {
+      trimSel.replaceChildren(...currentModel().trims.map((t) => new Option(t.name, t.id)));
+    };
 
     const update = () => {
-      const price = Number(els.price.value);
+      const model = currentModel();
+      const trim = model.trims.find((t) => t.id === trimSel.value) ?? model.trims[0];
+      const reg = (form.querySelector('input[name="reg"]:checked') as HTMLInputElement).value as 'rf' | 'kg';
+      const price = trim[reg];
       const downPct = Number(els.down.value);
       const term = Number((form.querySelector('input[name="term"]:checked') as HTMLInputElement).value);
       const down = (price * downPct) / 100;
       const loan = price - down;
       const payment = rate > 0 ? (loan * rate) / (1 - Math.pow(1 + rate, -term)) : loan / term;
 
+      els.price.value = money(price);
       els.downOut.value = `${downPct}%`;
       els.downSum.value = money(down);
       els.loan.value = money(loan);
       els.payment.value = money(payment);
       form.style.setProperty('--fill', `${(downPct / 90) * 100}%`);
 
-      const trim = (els.price as HTMLSelectElement).selectedOptions[0]?.dataset.trim ?? '';
-      form.querySelector<HTMLElement>('[data-open-lead]')!.dataset.trim = trim;
+      leadBtn.dataset.model = model.name;
+      leadBtn.dataset.trim = trim.id;
     };
 
+    modelSel?.addEventListener('change', fillTrims);
     form.addEventListener('input', update);
     form.addEventListener('submit', (e) => e.preventDefault());
     update();
@@ -241,6 +289,32 @@ const terms = [12, 24, 36, 48, 60, 72, 84].filter((m) => m <= maxTermMonths);
   .calc__terms input:focus-visible + span {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+
+  .calc__pair {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .calc__reg div {
+    grid-template-columns: repeat(2, 64px);
+  }
+
+  .calc__reg span {
+    height: 52px;
+  }
+
+  .calc__price {
+    margin-top: -8px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .calc__price output {
+    font-weight: 800;
+    color: var(--ink);
   }
 
   .calc__result {

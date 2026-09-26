@@ -29,13 +29,36 @@ document.querySelectorAll('#site-nav a').forEach((a) =>
   }),
 );
 
-// --- Мобильная панель: прячем, когда форма тест-драйва уже на экране ---
+// --- Меню «Модели» в шапке ---
+const mmBtn = document.querySelector<HTMLButtonElement>('[data-mm-btn]');
+const setMm = (open: boolean) => {
+  header?.classList.toggle('is-mm-open', open);
+  mmBtn?.setAttribute('aria-expanded', String(open));
+};
+mmBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  setMm(!header?.classList.contains('is-mm-open'));
+});
+document.addEventListener('click', (e) => {
+  if (!(e.target as HTMLElement).closest('[data-mm-panel]')) setMm(false);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') setMm(false);
+});
+document.querySelectorAll('[data-mm-panel] a').forEach((a) => a.addEventListener('click', () => setMm(false)));
+
+// --- Мобильная панель: прячем на первом экране (там свои кнопки) и когда форма тест-драйва уже видна ---
 const mbar = document.querySelector<HTMLElement>('[data-mbar]');
-const leadSection = document.querySelector('#test-drive');
-if (mbar && leadSection) {
-  new IntersectionObserver(([entry]) => mbar.classList.toggle('is-hidden', entry.isIntersecting), {
-    threshold: 0.25,
-  }).observe(leadSection);
+if (mbar) {
+  const hidden = new Set<Element>();
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => (e.isIntersecting ? hidden.add(e.target) : hidden.delete(e.target)));
+      mbar.classList.toggle('is-hidden', hidden.size > 0);
+    },
+    { threshold: 0.25 },
+  );
+  [hero, document.querySelector('#test-drive')].forEach((el) => el && io.observe(el));
 }
 
 // --- История модели: какой кадр показывать в «липком» окне ---
@@ -71,8 +94,9 @@ if (!reduceMotion) {
   });
 
   // Первый экран: плавный вход и параллакс при прокрутке
-  if (hero) {
-    const bg = hero.querySelector<HTMLElement>('[data-hero-bg]')!;
+  const heroBg = hero?.querySelector<HTMLElement>('[data-hero-bg]');
+  if (hero && heroBg) {
+    const bg = heroBg;
     const blocks = hero.querySelectorAll<HTMLElement>('[data-hero-content]');
     const items = [...blocks].flatMap((b) => [...b.children]);
     gsap.from(items, { opacity: 0, y: 36, duration: 1, stagger: 0.09, ease: 'power3.out', delay: 0.15 });

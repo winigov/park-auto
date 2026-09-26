@@ -1,20 +1,34 @@
 ---
 import Base from '../layouts/Base.astro';
-import Media from '../components/Media.astro';
+import Showcase from '../components/Showcase.astro';
+import Catalog from '../components/Catalog.astro';
 import Registration from '../components/Registration.astro';
+import Credit from '../components/Credit.astro';
 import WhyUs from '../components/WhyUs.astro';
+import Faq from '../components/Faq.astro';
 import LeadSection from '../components/LeadSection.astro';
 import Contacts from '../components/Contacts.astro';
-import { models } from '../data/models';
+import { models, featuredModels } from '../data/models';
+import { companyFaq } from '../data/company';
+import { fullName } from '../data/types';
 import { site } from '../config/site';
-import { absUrl, path } from '../config/paths';
-import { formatPrice, minPrice } from '../scripts/format';
+import { absUrl } from '../config/paths';
+
+const cityIn = site.city === 'Махачкала' ? 'Махачкале' : site.city;
 
 const nav = [
-  { href: '#models', label: 'Модели' },
+  { href: '#models', label: 'Каталог' },
   { href: '#registration', label: 'Учёт РФ/КР' },
+  { href: '#credit', label: 'Кредит' },
   { href: '#about', label: 'О нас' },
   { href: '#contacts', label: 'Контакты' },
+];
+
+const perks = [
+  { title: 'Новые автомобили', text: 'Модели 2025–2026 годов в наличии и под заказ' },
+  { title: 'Учёт РФ или КР', text: 'Честно считаем оба варианта' },
+  { title: 'Кредит и трейд-ин', text: 'Банки-партнёры, ваш автомобиль в зачёт' },
+  { title: 'Тест-драйв', text: `На площадке в ${cityIn}` },
 ];
 
 const jsonLd = [
@@ -31,155 +45,105 @@ const jsonLd = [
       streetAddress: site.address,
       addressCountry: 'RU',
     },
+    geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lon },
     url: absUrl('/', Astro.site),
   },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Модельный ряд',
+    itemListElement: models.map((m, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: fullName(m),
+      url: absUrl(`/${m.slug}/`, Astro.site),
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: companyFaq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
 ];
+
+const modelNames = models.map(fullName);
+const leadPhoto = featuredModels[0].ctaPhoto ?? featuredModels[0].hero;
 ---
 
 <Base
-  title={`Китайские автомобили в ${site.city === 'Махачкала' ? 'Махачкале' : site.city} — учёт РФ и КР | ${site.name}`}
-  description={`${site.name}: новые китайские автомобили в наличии в Махачкале. На учёте РФ и Кыргызстана, кредит, трейд-ин, тест-драйв.`}
+  title={`Китайские автомобили в ${cityIn} — цены, учёт РФ и КР | ${site.name}`}
+  description={`${site.name}: новые китайские автомобили в ${cityIn}. ${modelNames.join(', ')}. Учёт РФ и Кыргызстана, кредит, трейд-ин, тест-драйв.`}
+  ogImage={featuredModels[0].hero.src?.src}
   jsonLd={jsonLd}
   nav={nav}
+  models={modelNames}
 >
-  <section class="home-hero section--dark">
-    <div class="container">
-      <p class="eyebrow">{site.name} · {site.city}</p>
-      <h1 class="h-display">Китайские автомобили<br />на учёте РФ и КР</h1>
-      <p class="lead">Новые автомобили в наличии, честный расчёт двух вариантов учёта, кредит и трейд-ин.</p>
-      <div class="home-hero__cta">
-        <a class="btn" href="#models">Смотреть модели</a>
-        <button class="btn btn--ghost" type="button" data-open-lead data-intent="price">Подобрать автомобиль</button>
-      </div>
-    </div>
+  <Showcase models={featuredModels} />
+
+  <section class="perks" aria-label="Преимущества">
+    <ul class="container perks__list">
+      {
+        perks.map((p) => (
+          <li>
+            <b>{p.title}</b>
+            <span>{p.text}</span>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
-  <section class="section" id="models">
-    <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Модельный ряд</span>
-        <h2 class="h-section">В наличии</h2>
-      </div>
-      <ul class="models">
-        {
-          models.map((m) => (
-            <li>
-              <a class="model-card" href={path(`/${m.slug}/`)}>
-                <div class="model-card__img">
-                  <Media photo={m.hero} sizes="(max-width: 720px) 100vw, 50vw" dark />
-                </div>
-                <div class="model-card__body">
-                  <p class="model-card__type">{m.bodyType} · {m.powertrain}</p>
-                  <h3 class="model-card__name">
-                    {m.brand} {m.name}
-                  </h3>
-                  <p class="model-card__price">
-                    от {formatPrice(Math.min(minPrice(m.trims, 'rf'), minPrice(m.trims, 'kg')))}
-                  </p>
-                </div>
-              </a>
-            </li>
-          ))
-        }
-        <li class="models__soon">
-          <p>Скоро здесь появятся другие модели</p>
-          <button class="btn btn--ghost btn--sm" type="button" data-open-lead data-intent="price">
-            Подобрать под заказ
-          </button>
-        </li>
-      </ul>
-    </div>
-  </section>
-
+  <Catalog
+    models={models}
+    id="models"
+    eyebrow="Модельный ряд"
+    title="Выберите свой автомобиль"
+    lead="Цены — для учёта в России или в Кыргызстане. Переключите, чтобы сравнить."
+  />
   <Registration />
+  <Credit models={models} />
   <WhyUs />
-  <LeadSection model="автомобиль мечты" trims={[]} photo={models[0].ctaPhoto} />
+  <Faq items={companyFaq} />
+  <LeadSection models={modelNames} photo={leadPhoto} title="Приезжайте на тест-драйв" />
   <Contacts />
 </Base>
 
 <style>
-  .home-hero {
-    min-height: 88svh;
-    display: flex;
-    align-items: flex-end;
-    padding: calc(var(--header-h) + 64px) 0 clamp(56px, 9vh, 110px);
-    background:
-      radial-gradient(90% 70% at 80% 10%, #1b2436 0%, transparent 60%),
-      var(--dark);
-  }
-
-  .home-hero .lead {
-    margin-top: 28px;
-  }
-
-  .home-hero__cta {
-    margin-top: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .models {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
-    gap: 16px;
-  }
-
-  .model-card {
-    display: block;
-    border-radius: var(--radius);
-    overflow: hidden;
+  .perks {
     background: var(--dark);
     color: var(--on-dark);
-    text-decoration: none;
+    border-top: 1px solid var(--dark-line);
   }
 
-  .model-card__img {
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
+  .perks__list {
+    list-style: none;
+    margin: 0 auto;
+    padding-block: 28px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
   }
 
-  .model-card__img :global(.media) {
-    transition: transform 0.8s var(--ease);
+  .perks b {
+    display: block;
+    font-size: 16px;
+    font-weight: 750;
   }
 
-  .model-card:hover .model-card__img :global(.media) {
-    transform: scale(1.04);
-  }
-
-  .model-card__body {
-    padding: 24px 28px 28px;
-  }
-
-  .model-card__type {
+  .perks span {
+    display: block;
+    margin-top: 4px;
     font-size: 14px;
     color: var(--on-dark-2);
   }
 
-  .model-card__name {
-    margin-top: 6px;
-    font-size: clamp(28px, 3vw, 36px);
-  }
-
-  .model-card__price {
-    margin-top: 10px;
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .models__soon {
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 16px;
-    min-height: 240px;
-    padding: 32px;
-    border: 2px dashed var(--line);
-    border-radius: var(--radius);
-    color: var(--ink-2);
-    text-align: center;
+  @media (max-width: 860px) {
+    .perks__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>

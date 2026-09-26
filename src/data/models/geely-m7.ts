@@ -21,10 +21,14 @@ const model: CarModel = {
   slug: 'geely-m7',
   brand: 'Geely',
   name: 'Galaxy M7',
-  fullName: 'Geely Galaxy M7',
-  bodyType: 'Кроссовер',
-  powertrain: 'Подзаряжаемый гибрид',
   year: 2026,
+  body: 'crossover',
+  energy: 'phev',
+  seats: 5,
+  availability: 'in-stock', // TODO: сверить с наличием
+  isNew: true,
+  featured: true,
+  order: 20,
   tagline: 'Электромобиль в городе. До 1730 км в дальней дороге.',
   lead: 'Новый семейный кроссовер-гибрид 2026 года: 225 км на электричестве, экономичный мотор для трассы и оснащение уровня премиум.',
 
@@ -34,6 +38,12 @@ const model: CarModel = {
     shot: 'Экстерьер 3/4 спереди',
     focus: '46% 62%',
   },
+
+  highlights: [
+    { value: '1730 км', label: 'запас хода' },
+    { value: '225 км', label: 'на электричестве' },
+    { value: '7,7 с', label: 'до 100 км/ч' },
+  ],
 
   stats: [
     { value: 1730, unit: 'км', label: 'общий запас хода на полном баке и заряде' },

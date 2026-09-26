@@ -39,39 +39,90 @@ export interface Chapter {
   photo: Photo;
 }
 
+/** Тип кузова — по нему фильтруется каталог */
+export type BodyKind = 'crossover' | 'suv' | 'minivan' | 'sedan' | 'hatchback' | 'pickup';
+
+/** Силовая установка — по ней фильтруется каталог */
+export type EnergyKind = 'phev' | 'erev' | 'ev' | 'hev' | 'ice';
+
+export const bodyLabels: Record<BodyKind, string> = {
+  crossover: 'Кроссовер',
+  suv: 'Внедорожник',
+  minivan: 'Минивэн',
+  sedan: 'Седан',
+  hatchback: 'Хэтчбек',
+  pickup: 'Пикап',
+};
+
+export const energyLabels: Record<EnergyKind, string> = {
+  phev: 'Подзаряжаемый гибрид',
+  erev: 'Гибрид с увеличителем запаса хода',
+  ev: 'Электромобиль',
+  hev: 'Гибрид',
+  ice: 'Бензин',
+};
+
+/** Короткие подписи для фильтров и карточек */
+export const energyShort: Record<EnergyKind, string> = {
+  phev: 'Гибрид PHEV',
+  erev: 'Гибрид EREV',
+  ev: 'Электро',
+  hev: 'Гибрид',
+  ice: 'Бензин',
+};
+
+/**
+ * Модель в каталоге. Обязательное — то, что нужно карточке и базовой странице.
+ * Промо-блоки (chapters, interior, tech, gallery) необязательны: страница покажет только заполненные.
+ */
 export interface CarModel {
   slug: string;
   brand: string;
   name: string;
-  fullName: string;
-  bodyType: string;
-  powertrain: string;
   year: number;
+  body: BodyKind;
+  energy: EnergyKind;
+  seats: number;
+  availability: 'in-stock' | 'on-order';
+  isNew?: boolean;
+  /** Показывать на первом экране главной */
+  featured?: boolean;
+  /** Порядок в каталоге: меньше — выше */
+  order?: number;
+
   tagline: string;
   lead: string;
   hero: Photo;
+  /** На сколько процентов опустить фото первого экрана, если машина в кадре стоит высоко и заголовок ложится на неё */
+  heroOffset?: number;
+  /** Три коротких цифры для карточки в каталоге */
+  highlights: { value: string; label: string }[];
   stats: Stat[];
   /** Сноска под цифрами: источник, цикл измерения */
   statsNote: string;
-  chapters: Chapter[];
-  interior: {
+
+  chapters?: Chapter[];
+  interior?: {
     title: string;
     text: string;
     photo: Photo;
     features: { title: string; text: string }[];
   };
-  tech: {
+  tech?: {
     title: string;
     text: string;
     points: { value: string; label: string }[];
   };
-  gallery: Photo[];
-  /** Фон блока с формой тест-драйва */
-  ctaPhoto: Photo;
+  gallery?: Photo[];
+  /** Фон блока с формой тест-драйва (по умолчанию — hero) */
+  ctaPhoto?: Photo;
+
   specs: { group: string; items: Spec[] }[];
   specsNote: string;
   trims: Trim[];
   colors: { name: string; hex: string }[];
-  faq: { q: string; a: string }[];
+  faq?: { q: string; a: string }[];
   seo: { title: string; description: string };
 }
+
+export const fullName = (m: Pick<CarModel, 'brand' | 'name'>) => `${m.brand} ${m.name}`;

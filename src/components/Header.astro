@@ -1,7 +1,11 @@
 ---
 import { site } from '../config/site';
 import Logo from './Logo.astro';
+import Media from './Media.astro';
 import { path } from '../config/paths';
+import { models } from '../data/models';
+import { energyShort } from '../data/types';
+import { formatPrice, minPrice } from '../scripts/format';
 
 interface Props {
   nav: { href: string; label: string }[];
@@ -14,22 +18,52 @@ const { nav } = Astro.props;
     <a href={path('/')} class="header__logo"><Logo /></a>
 
     <nav class="header__nav" id="site-nav" aria-label="Разделы">
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      <div class="mm" data-mm>
+        <button class="mm__btn" type="button" aria-expanded="false" aria-controls="models-menu" data-mm-btn>
+          Модели
+          <svg viewBox="0 0 12 8" aria-hidden="true"
+            ><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            ></path></svg
+          >
+        </button>
+        <div class="mm__panel" id="models-menu" data-mm-panel>
+          <div class="container mm__inner">
+            <ul class="mm__grid">
+              {
+                models.map((m) => (
+                  <li>
+                    <a class="mm__item" href={path(`/${m.slug}/`)}>
+                      <span class="mm__img">
+                        <Media photo={m.hero} sizes="240px" dark />
+                      </span>
+                      <span class="mm__text">
+                        <span class="mm__brand">{m.brand}</span>
+                        <span class="mm__name">{m.name}</span>
+                        <span class="mm__meta">
+                          {energyShort[m.energy]} · от {formatPrice(minPrice(m.trims, 'kg'))}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <a class="mm__all" href={path('/#models')}>Весь модельный ряд →</a>
+          </div>
+        </div>
+      </div>
+      {nav.map((item) => <a class="header__link" href={item.href}>{item.label}</a>)}
       <a class="header__nav-phone" href={site.phoneHref}>{site.phone}</a>
     </nav>
 
     <div class="header__actions">
       <a class="header__phone" href={site.phoneHref}>{site.phone}</a>
       <button class="btn btn--sm" type="button" data-open-lead data-intent="test-drive">Тест-драйв</button>
-      {
-        nav.length > 0 && (
-          <button class="header__burger" type="button" aria-controls="site-nav" aria-expanded="false" data-burger>
-            <span class="visually-hidden">Меню</span>
-            <i />
-            <i />
-          </button>
-        )
-      }
+      <button class="header__burger" type="button" aria-controls="site-nav" aria-expanded="false" data-burger>
+        <span class="visually-hidden">Меню</span>
+        <i />
+        <i />
+      </button>
     </div>
   </div>
 </header>
@@ -48,7 +82,8 @@ const { nav } = Astro.props;
       box-shadow 0.35s;
   }
 
-  .header.is-solid {
+  .header.is-solid,
+  .header.is-mm-open {
     background: rgb(255 255 255 / 0.82);
     backdrop-filter: saturate(180%) blur(18px);
     -webkit-backdrop-filter: saturate(180%) blur(18px);
@@ -77,14 +112,128 @@ const { nav } = Astro.props;
     font-weight: 600;
   }
 
-  .header__nav a {
+  .header__link,
+  .mm__btn {
     text-decoration: none;
     opacity: 0.78;
     transition: opacity 0.2s;
   }
 
-  .header__nav a:hover {
+  .header__link:hover,
+  .mm__btn:hover,
+  .header.is-mm-open .mm__btn {
     opacity: 1;
+  }
+
+  /* Меню «Модели» */
+  .mm__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .mm__btn svg {
+    width: 10px;
+    height: 10px;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .header.is-mm-open .mm__btn svg {
+    transform: rotate(180deg);
+  }
+
+  .mm__panel {
+    position: fixed;
+    inset: calc(var(--demo-h) + var(--header-h)) 0 auto;
+    padding: 28px 0 32px;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.25);
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition:
+      opacity 0.25s,
+      transform 0.35s var(--ease),
+      visibility 0.25s;
+  }
+
+  .header.is-mm-open .mm__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .mm__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 20px 16px;
+  }
+
+  .mm__item {
+    display: grid;
+    gap: 12px;
+    text-decoration: none;
+    opacity: 1;
+  }
+
+  .mm__img {
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--dark);
+  }
+
+  .mm__img :global(.media) {
+    transition: transform 0.6s var(--ease);
+  }
+
+  .mm__item:hover .mm__img :global(.media) {
+    transform: scale(1.05);
+  }
+
+  .mm__text {
+    display: grid;
+    gap: 1px;
+  }
+
+  .mm__brand {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .mm__name {
+    font-size: 18px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+  }
+
+  .mm__meta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  .mm__all {
+    display: inline-block;
+    margin-top: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
   }
 
   .header__nav-phone {
@@ -173,15 +322,60 @@ const { nav } = Astro.props;
         visibility 0.25s;
     }
 
-    .header__nav a {
+    .header__nav {
+      max-height: calc(100dvh - var(--header-h) - var(--demo-h));
+      overflow-y: auto;
+    }
+
+    .header__link,
+    .header__nav-phone {
       padding: 14px 0;
       border-bottom: 1px solid var(--line);
       opacity: 1;
     }
 
+    .mm__btn {
+      display: none;
+    }
+
+    .mm__panel {
+      position: static;
+      padding: 8px 0 12px;
+      box-shadow: none;
+      border: 0;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    .mm__inner {
+      padding: 0;
+    }
+
+    .mm__grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .mm__item {
+      grid-template-columns: 96px 1fr;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mm__name {
+      font-size: 17px;
+    }
+
+    .mm__all {
+      margin-top: 12px;
+      font-size: 16px;
+    }
+
     .header__nav-phone {
       display: block;
       font-weight: 800;
+      text-decoration: none;
     }
 
     .header.is-open {

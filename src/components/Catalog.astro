@@ -1,0 +1,247 @@
+---
+import type { CarModel } from '../data/types';
+import { bodyLabels, energyShort } from '../data/types';
+import { plural } from '../scripts/format';
+import ModelCard from './ModelCard.astro';
+import RegSwitch from './RegSwitch.astro';
+
+interface Props {
+  models: CarModel[];
+  id?: string;
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  /** Показывать фильтры (на главной — да, в блоке «Другие модели» — нет) */
+  filters?: boolean;
+  alt?: boolean;
+}
+const { models, id = 'models', eyebrow, title, lead, filters = true, alt = false } = Astro.props;
+
+const uniq = <T,>(arr: T[]) => [...new Set(arr)];
+const seatsLabel = (g: string) => (g === '6+' ? '6–7 мест' : `${g} ${plural(Number(g), ['место', 'места', 'мест'])}`);
+
+// Группа фильтра показывается, только если в каталоге есть хотя бы два разных значения
+const groups = [
+  { key: 'body', label: 'Кузов', values: uniq(models.map((m) => m.body)).map((v) => ({ v, t: bodyLabels[v] })) },
+  {
+    key: 'seats',
+    label: 'Мест',
+    values: uniq(models.map((m) => (m.seats >= 6 ? '6+' : String(m.seats)))).sort().map((v) => ({ v, t: seatsLabel(v) })),
+  },
+  { key: 'energy', label: 'Двигатель', values: uniq(models.map((m) => m.energy)).map((v) => ({ v, t: energyShort[v] })) },
+].filter((g) => g.values.length > 1);
+
+const showFilters = filters && groups.length > 0;
+const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 'моделей'])}`;
+---
+
+<section class:list={['catalog section reg-scope', { 'section--alt': alt }]} id={id} data-catalog>
+  <div class="container">
+    <div class="catalog__head">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{eyebrow}</span>
+        <h2 class="h-section">{title}</h2>
+        {lead && <p class="lead">{lead}</p>}
+      </div>
+      <RegSwitch name={`reg-${id}`} class="catalog__reg" />
+    </div>
+
+    {
+      showFilters && (
+        <div class="catalog__filters" data-filters>
+          {groups.map((g) => (
+            <div class="chips" role="group" aria-label={g.label} data-group={g.key}>
+              <button type="button" class="chip" aria-pressed="true" data-value="all">
+                {g.key === 'body' ? 'Все кузова' : g.key === 'seats' ? 'Любое число мест' : 'Все двигатели'}
+              </button>
+              {g.values.map(({ v, t }) => (
+                <button type="button" class="chip" aria-pressed="false" data-value={v}>
+                  {t}
+                </button>
+              ))}
+            </div>
+          ))}
+          <p class="catalog__count" aria-live="polite" data-count>
+            {count(models.length)}
+          </p>
+        </div>
+      )
+    }
+
+    <div class="catalog__grid">
+      {models.map((m) => <ModelCard model={m} />)}
+    </div>
+
+    <div class="catalog__empty" data-empty hidden>
+      <p>Под эти параметры моделей пока нет. Подберём автомобиль под заказ.</p>
+      <div>
+        <button type="button" class="btn btn--ghost btn--sm" data-reset>Сбросить фильтры</button>
+        <button type="button" class="btn btn--sm" data-open-lead data-intent="price">Подобрать под заказ</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { plural } from '../scripts/format';
+
+  document.querySelectorAll<HTMLElement>('[data-catalog]').forEach((root) => {
+    const filters = root.querySelector('[data-filters]');
+    if (!filters) return;
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-card]')];
+    const state: Record<string, string> = {};
+    const countEl = root.querySelector('[data-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+
+    const apply = () => {
+      let shown = 0;
+      cards.forEach((card) => {
+        const ok = Object.entries(state).every(([k, v]) => v === 'all' || card.dataset[k] === v);
+        card.hidden = !ok;
+        if (ok) shown++;
+      });
+      countEl.textContent = `${shown} ${plural(shown, ['модель', 'модели', 'моделей'])}`;
+      empty.hidden = shown > 0;
+    };
+
+    const select = (group: HTMLElement, value: string) => {
+      state[group.dataset.group!] = value;
+      group.querySelectorAll<HTMLButtonElement>('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.value === value)));
+    };
+
+    filters.querySelectorAll<HTMLElement>('[data-group]').forEach((group) => {
+      state[group.dataset.group!] = 'all';
+      group.addEventListener('click', (e) => {
+        const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip');
+        if (!chip) return;
+        select(group, chip.dataset.value!);
+        apply();
+      });
+    });
+
+    root.querySelector('[data-reset]')?.addEventListener('click', () => {
+      filters.querySelectorAll<HTMLElement>('[data-group]').forEach((g) => select(g, 'all'));
+      apply();
+    });
+  });
+</script>
+
+<style>
+  .catalog__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0 32px;
+  }
+
+  .catalog__head :global(.catalog__reg) {
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .catalog__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+    margin: -16px 0 28px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--bg-alt);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  .section--alt .chip {
+    background: #fff;
+  }
+
+  .chip:hover {
+    color: var(--ink);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .catalog__count {
+    margin-left: auto;
+    font-size: 14px;
+    color: var(--ink-3);
+  }
+
+  .catalog__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 16px;
+  }
+
+  .catalog:not(.section--alt) .catalog__grid :global(.mc) {
+    background: var(--bg-alt);
+  }
+
+  .catalog__empty {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+    padding: 48px 24px;
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    text-align: center;
+    color: var(--ink-2);
+  }
+
+  .catalog__empty[hidden] {
+    display: none;
+  }
+
+  .catalog__empty div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  @media (max-width: 720px) {
+    .catalog__filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+    }
+
+    .catalog__count {
+      margin-left: 0;
+    }
+  }
+</style>

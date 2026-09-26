@@ -15,10 +15,12 @@ interface Props {
   nav?: { href: string; label: string }[];
   /** Подпись для формы по умолчанию (например, «Geely Galaxy M7») */
   model?: string;
+  /** Выбор модели в форме (главная) */
+  models?: string[];
   trims?: { id: string; name: string }[];
 }
 
-const { title, description, ogImage, jsonLd = [], nav = [], model = '', trims = [] } = Astro.props;
+const { title, description, ogImage, jsonLd = [], nav = [], model = '', models = [], trims = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ymId = site.metrikaId;
 ---
@@ -82,7 +84,7 @@ const ymId = site.metrikaId;
     </main>
     <Footer />
     <MobileBar />
-    <LeadModal model={model} trims={trims} />
+    <LeadModal model={model} models={models} trims={trims} />
 
     <script>
       import '../scripts/lead';

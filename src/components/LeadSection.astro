@@ -4,11 +4,14 @@ import Media from './Media.astro';
 import type { Photo } from '../data/types';
 
 interface Props {
-  model: string;
-  trims: { id: string; name: string }[];
+  /** Модель страницы; на главной не задаётся — там выбор из models */
+  model?: string;
+  models?: string[];
+  trims?: { id: string; name: string }[];
   photo: Photo;
+  title?: string;
 }
-const { model, trims, photo } = Astro.props;
+const { model = '', models = [], trims = [], photo, title = `Почувствуйте ${model} за рулём` } = Astro.props;
 ---
 
 <section class="lead-sec section section--dark" id="test-drive">
@@ -18,14 +21,14 @@ const { model, trims, photo } = Astro.props;
   <div class="container lead-sec__grid">
     <div class="section-head" data-reveal>
       <span class="eyebrow">Тест-драйв</span>
-      <h2 class="h-section">Почувствуйте {model} за рулём</h2>
+      <h2 class="h-section">{title}</h2>
       <p class="lead">
         Запишитесь на тест-драйв — подготовим автомобиль к вашему приезду, покажем все функции и рассчитаем
         стоимость на учёте РФ и КР.
       </p>
     </div>
     <div class="lead-sec__card" data-reveal>
-      <LeadForm id="section" model={model} trims={trims} dark />
+      <LeadForm id="section" model={model} models={models} trims={trims} dark />
     </div>
   </div>
 </section>
@@ -34,6 +37,7 @@ const { model, trims, photo } = Astro.props;
   .lead-sec {
     position: relative;
     overflow: hidden;
+    overflow: clip; /* обрезает, но не делает блок прокручиваемым */
     isolation: isolate;
   }
 

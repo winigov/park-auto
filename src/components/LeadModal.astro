@@ -3,9 +3,10 @@ import LeadForm from './LeadForm.astro';
 
 interface Props {
   model: string;
+  models: string[];
   trims: { id: string; name: string }[];
 }
-const { model, trims } = Astro.props;
+const { model, models, trims } = Astro.props;
 ---
 
 <dialog class="lead-modal" data-lead-modal aria-labelledby="lead-modal-title">
@@ -13,10 +14,10 @@ const { model, trims } = Astro.props;
     <button class="lead-modal__close" type="button" data-close-lead aria-label="Закрыть">
       <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
     </button>
-    <p class="eyebrow" data-lead-eyebrow>{model || 'Парк Авто'}</p>
+    <p class="eyebrow" data-lead-eyebrow data-default={model || 'Парк Авто'}>{model || 'Парк Авто'}</p>
     <h2 class="lead-modal__title" id="lead-modal-title" data-lead-title>Записаться на тест-драйв</h2>
     <p class="lead-modal__text" data-lead-text>Оставьте телефон — подберём удобное время и подготовим автомобиль.</p>
-    <LeadForm id="modal" model={model} trims={trims} />
+    <LeadForm id="modal" model={model} models={models} trims={trims} />
   </div>
 </dialog>
 

@@ -1,0 +1,68 @@
+---
+// Переключатель цен «Учёт РФ / Учёт КР». Работает внутри блока с классом reg-scope:
+// элементы .price-rf и .price-kg показываются в зависимости от выбора (стили в global.css).
+interface Props {
+  name: string;
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+---
+
+<fieldset class:list={['reg-switch', className]}>
+  <legend class="visually-hidden">Учёт автомобиля</legend>
+  <label>
+    <input type="radio" name={name} value="rf" data-reg="rf" checked />
+    <span>Учёт РФ</span>
+  </label>
+  <label>
+    <input type="radio" name={name} value="kg" data-reg="kg" />
+    <span>Учёт КР</span>
+  </label>
+</fieldset>
+
+<style>
+  .reg-switch {
+    display: inline-flex;
+    padding: 5px;
+    margin: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .reg-switch label {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .reg-switch input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .reg-switch span {
+    display: block;
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink-2);
+    white-space: nowrap;
+    transition:
+      background-color 0.25s,
+      color 0.25s;
+  }
+
+  .reg-switch input:checked + span {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .reg-switch input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>

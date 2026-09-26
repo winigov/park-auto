@@ -3,7 +3,7 @@ import type { CarModel } from '../data/types';
 import Media from './Media.astro';
 
 interface Props {
-  interior: CarModel['interior'];
+  interior: NonNullable<CarModel['interior']>;
 }
 const { interior } = Astro.props;
 ---
@@ -42,6 +42,7 @@ const { interior } = Astro.props;
 
   .interior__stage {
     overflow: hidden;
+    overflow: clip; /* обрезает, но не делает блок прокручиваемым */
   }
 
   .interior__img {
