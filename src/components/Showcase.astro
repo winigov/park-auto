@@ -98,13 +98,14 @@ const multi = models.length > 1;
 </section>
 
 <script>
-  const DURATION = 7000;
   const root = document.querySelector<HTMLElement>('[data-showcase]');
   const slides = root ? [...root.querySelectorAll<HTMLElement>('[data-slide]')] : [];
   const tabs = root ? [...root.querySelectorAll<HTMLElement>('[data-tab]')] : [];
 
   if (root && slides.length > 1) {
+    // При «Уменьшить движение» витрина тоже листается, но реже и простым затуханием (приближение фото отключено в CSS)
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DURATION = reduce ? 10000 : 7000;
     let current = 0;
     let paused = false;
     let visible = true;
@@ -130,7 +131,7 @@ const multi = models.length > 1;
       });
     };
 
-    const sync = () => root.classList.toggle('is-paused', reduce || paused || !visible || document.hidden);
+    const sync = () => root.classList.toggle('is-paused', paused || !visible || document.hidden);
 
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => go(i));
@@ -139,11 +140,17 @@ const multi = models.length > 1;
       });
     });
 
-    root.addEventListener('pointerenter', (e) => {
+    // Пауза, только пока курсор над вкладками: витрина на весь экран, и пауза по наведению на неё целиком
+    // останавливала бы прокрутку почти всегда
+    const tabsBox = root.querySelector<HTMLElement>('.showcase__tabs');
+    tabsBox?.addEventListener('pointerenter', (e) => {
       if (e.pointerType === 'mouse') (paused = true), sync();
     });
-    root.addEventListener('pointerleave', () => ((paused = false), sync()));
-    root.addEventListener('focusin', () => ((paused = true), sync()));
+    tabsBox?.addEventListener('pointerleave', () => ((paused = false), sync()));
+    // и при навигации с клавиатуры; клик мышью по вкладке паузу не включает
+    root.addEventListener('focusin', (e) => {
+      if ((e.target as HTMLElement).matches(':focus-visible')) (paused = true), sync();
+    });
     root.addEventListener('focusout', () => ((paused = false), sync()));
     document.addEventListener('visibilitychange', sync);
     new IntersectionObserver(([e]) => ((visible = e.isIntersecting), sync()), { threshold: 0.3 }).observe(root);
