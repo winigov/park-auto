@@ -11,10 +11,12 @@ interface Props {
   class?: string;
   /** Тёмный плейсхолдер для тёмных секций */
   dark?: boolean;
+  /** Фото на весь экран (первый экран, салон): нарезаем до 2560 px, остальные — до 1600 px */
+  full?: boolean;
 }
 
-const { photo, sizes = '100vw', priority = false, eager = false, class: className, dark = false } = Astro.props;
-const widths = [640, 960, 1280, 1920, 2560];
+const { photo, sizes = '100vw', priority = false, eager = false, class: className, dark = false, full = false } = Astro.props;
+const widths = full ? [640, 960, 1280, 1920, 2560] : [480, 800, 1200, 1600];
 ---
 
 {
@@ -22,7 +24,8 @@ const widths = [640, 960, 1280, 1920, 2560];
     <Picture
       src={photo.src}
       alt={photo.alt}
-      formats={['avif', 'webp']}
+      formats={['avif']}
+      fallbackFormat="webp"
       widths={widths.filter((w) => w <= photo.src!.width)}
       sizes={sizes}
       loading={priority || eager ? 'eager' : 'lazy'}
