@@ -365,6 +365,12 @@ p {
   white-space: nowrap;
 }
 
+@media (max-width: 720px) {
+  .hide-mobile {
+    display: none;
+  }
+}
+
 /* Цены РФ/КГ: переключаются RegSwitch внутри .reg-scope */
 .price-kg {
   display: none;

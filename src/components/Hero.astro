@@ -200,6 +200,11 @@ const fromKg = minPrice(model.trims, 'kg');
   }
 
   @media (max-width: 720px) {
+    .hero__top {
+      /* отступ от шапки до заголовка на телефоне — вдвое меньше */
+      padding-top: calc(var(--header-h) + clamp(12px, 2.5vh, 28px));
+    }
+
     .hero__prices {
       width: 100%;
       justify-content: space-between;
@@ -211,6 +216,13 @@ const fromKg = minPrice(model.trims, 'kg');
 
     .hero__cta .btn {
       flex: 1 1 100%;
+    }
+  }
+
+  /* Узкие телефоны (360 px): цены помещаются в одну строку */
+  @media (max-width: 380px) {
+    .hero__prices dd {
+      font-size: 19px;
     }
   }
 </style>

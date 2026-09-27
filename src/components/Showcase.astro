@@ -53,8 +53,13 @@ const multi = models.length > 1;
             </div>
           </dl>
           <div class="slide__cta">
-            <a class="btn" href={path(`/${m.slug}/`)} tabindex={i === 0 ? undefined : -1}>
-              Подробнее о модели
+            <a
+              class="btn"
+              href={path(`/${m.slug}/`)}
+              aria-label={`Подробнее о ${fullName(m)}`}
+              tabindex={i === 0 ? undefined : -1}
+            >
+              Подробнее<span class="hide-mobile">&nbsp;о модели</span>
             </a>
             <button
               class="btn btn--ghost"
@@ -416,8 +421,11 @@ const multi = models.length > 1;
       inset: auto;
       top: auto;
       z-index: 0;
-      flex: 0 0 auto;
-      height: clamp(190px, 30svh, 280px);
+      /* фото занимает свободное место между заголовком и ценами */
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 190px;
+      max-height: 340px;
       margin-top: 8px;
       -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
       mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
@@ -448,12 +456,22 @@ const multi = models.length > 1;
       justify-content: space-between;
     }
 
+    .slide__top {
+      /* отступ от шапки до заголовка на телефоне — вдвое меньше */
+      padding-top: calc(var(--header-h) + clamp(14px, 3vh, 32px));
+    }
+
+    /* две кнопки в одну строку, по половине ширины */
     .slide__cta {
       width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .slide__cta .btn {
-      flex: 1 1 100%;
+      min-height: 52px;
+      padding: 0 12px;
     }
 
     .showcase__tabs {
@@ -479,6 +497,13 @@ const multi = models.length > 1;
     .slide__top > *,
     .slide__bottom {
       transition: none;
+    }
+  }
+
+  /* Узкие телефоны (360 px): цены помещаются в одну строку */
+  @media (max-width: 380px) {
+    .slide__prices dd {
+      font-size: 19px;
     }
   }
 </style>
