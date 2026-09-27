@@ -8,6 +8,10 @@ interface Props {
   note?: string;
 }
 const { colors, name, note } = Astro.props;
+
+// Рамка — в пропорциях самих фото (у одной модели они одинаковые), чтобы машина не обрезалась
+const first = colors[0].photo.src;
+const ratio = first ? `${first.width} / ${first.height}` : '2 / 1';
 ---
 
 <section class="colors section section--alt" id="colors" data-colors>
@@ -38,7 +42,7 @@ const { colors, name, note } = Astro.props;
       </div>
     </div>
 
-    <div class="colors__stage" data-reveal>
+    <div class="colors__stage" style={`--ratio:${ratio}`} data-reveal>
       {
         colors.map((c, i) => (
           <div class:list={['colors__img', { 'is-active': i === 0 }]} data-color-img={i}>
@@ -134,7 +138,7 @@ const { colors, name, note } = Astro.props;
 
   .colors__stage {
     position: relative;
-    aspect-ratio: 2 / 1;
+    aspect-ratio: var(--ratio);
     border-radius: 24px;
     overflow: hidden;
     background: var(--surface);
@@ -162,9 +166,11 @@ const { colors, name, note } = Astro.props;
       margin-bottom: 24px;
     }
 
+    /* На телефоне фото — от края до края экрана: машина крупнее и целиком */
     .colors__stage {
-      aspect-ratio: 16 / 10;
-      border-radius: 18px;
+      margin-inline: calc(-1 * var(--gutter));
+      border-radius: 0;
+      border: 0;
     }
 
     .colors__sw {
