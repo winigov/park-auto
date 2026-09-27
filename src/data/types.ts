@@ -37,8 +37,8 @@ export interface Feature {
   title: string;
   text: string;
   photo: Photo;
-  /** Размер в сетке: normal — треть ряда, wide — две трети, tall — треть ширины на два ряда */
-  size?: 'normal' | 'wide' | 'tall';
+  /** Размер в сетке: normal — треть ряда, wide — две трети. Для wide нужно фото от 1400 px, для normal — от 700 px */
+  size?: 'normal' | 'wide';
 }
 
 /** Цвет с живым фото — для блока «Цвета» */

@@ -24,7 +24,7 @@ const { photos } = Astro.props;
     {
       photos.map((p) => (
         <li class="gallery__item">
-          <Media photo={p} sizes="(max-width: 720px) 86vw, 60vw" />
+          <Media photo={p} sizes="(max-width: 720px) 86vw, (max-width: 1366px) 60vw, 820px" need={1600} />
         </li>
       ))
     }

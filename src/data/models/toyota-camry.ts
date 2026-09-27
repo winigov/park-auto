@@ -6,7 +6,7 @@ import hero from '../../assets/camry/hero.jpg';
 import side from '../../assets/camry/side.jpg';
 import rear from '../../assets/camry/rear.jpg';
 import detail from '../../assets/camry/detail.jpg';
-import dash from '../../assets/camry/interior-dash.jpg';
+import cabin from '../../assets/camry/interior-cabin.jpg';
 import lineup from '../../assets/camry/lineup.jpg';
 import optics from '../../assets/camry/optics.jpg';
 import screen from '../../assets/camry/screen.jpg';
@@ -16,7 +16,6 @@ import ambient from '../../assets/camry/ambient.jpg';
 import frontSeats from '../../assets/camry/front-seats.jpg';
 import wireless from '../../assets/camry/wireless.jpg';
 import rearSeats from '../../assets/camry/rear-seats.jpg';
-import multimedia from '../../assets/camry/multimedia.jpg';
 
 // «Camry 85» на рынке — обновлённая китайская GAC Toyota Camry 2027 модельного года (рестайлинг 9-го поколения, XV80).
 // TODO: уточнить у «Парк Авто», продают ли они именно рестайлинг (экран 15,6″) или дорестайлинг «80».
@@ -109,11 +108,7 @@ const model: CarModel = {
       photo: { src: optics, alt: 'Светодиодная фара Toyota Camry', shot: 'Передняя оптика', focus: '55% 45%' },
     },
     {
-      title: 'Всё на одном экране',
-      text: 'Навигация, музыка и климат — крупными плитками, которыми удобно пользоваться на ходу.',
-      photo: { src: multimedia, alt: 'Интерфейс мультимедиа Toyota Camry', shot: 'Интерфейс мультимедиа', focus: '50% 45%' },
-    },
-    {
+      size: 'wide',
       title: 'Цифровые приборы',
       text: 'Приборная панель 8,8″ и экран мультимедиа образуют единую линию перед водителем.',
       photo: { src: screen, alt: 'Цифровые приборы и экран Toyota Camry', shot: 'Приборы и экран', focus: '55% 50%' },
@@ -144,7 +139,7 @@ const model: CarModel = {
   interior: {
     title: 'Бизнес-класс для всей семьи',
     text: 'Массаж и вентиляция спереди, подогрев и вентиляция сзади, панорамная крыша и аудиосистема JBL — в старших версиях.',
-    photo: { src: dash, alt: 'Передняя панель Toyota Camry с экраном 15,6 дюйма', shot: 'Салон: передняя панель', focus: '55% 50%' },
+    photo: { src: cabin, alt: 'Салон Toyota Camry с панорамной крышей и контурной подсветкой', shot: 'Салон целиком', focus: '50% 55%' },
     features: [
       { title: 'Экран 15,6″', text: 'Чип Snapdragon 8155P, подключение смартфона через CarPlay и HiCar.' },
       { title: 'Проекция на стекло', text: 'Скорость и подсказки ассистентов перед глазами — с версий G и HG.' },

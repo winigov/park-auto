@@ -42,7 +42,7 @@ const { colors, name, note } = Astro.props;
       {
         colors.map((c, i) => (
           <div class:list={['colors__img', { 'is-active': i === 0 }]} data-color-img={i}>
-            <Media photo={c.photo} sizes="(max-width: 1280px) 100vw, 1280px" eager={i === 0} />
+            <Media photo={c.photo} sizes="(max-width: 1280px) 100vw, 1280px" eager={i === 0} full need={1920} />
           </div>
         ))
       }

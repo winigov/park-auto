@@ -6,6 +6,11 @@ interface Props {
   interior: NonNullable<CarModel['interior']>;
 }
 const { interior } = Astro.props;
+
+// На весь экран — только достаточно крупное фото. Меньшее (например, 1920 px) ставим в рамку
+// по ширине контента в его пропорциях, без «раскрытия» и увеличения при прокрутке.
+const src = interior.photo.src;
+const full = !src || src.width >= 2400;
 ---
 
 <section class="interior section" id="interior">
@@ -15,11 +20,21 @@ const { interior } = Astro.props;
     <p class="lead">{interior.text}</p>
   </div>
 
-  <div class="interior__stage" data-expand>
-    <div class="interior__img" data-expand-target>
-      <Media photo={interior.photo} sizes="100vw" full />
-    </div>
-  </div>
+  {
+    full ? (
+      <div class="interior__stage" data-expand>
+        <div class="interior__img" data-expand-target>
+          <Media photo={interior.photo} sizes="100vw" full />
+        </div>
+      </div>
+    ) : (
+      <div class="container" data-reveal>
+        <div class="interior__img interior__img--boxed" style={`aspect-ratio:${src.width}/${src.height}`}>
+          <Media photo={interior.photo} sizes="(max-width: 1280px) 100vw, 1280px" full />
+        </div>
+      </div>
+    )
+  }
 
   <div class="container">
     <ul class="interior__features">
@@ -54,6 +69,12 @@ const { interior } = Astro.props;
     height: min(92vh, 960px);
     overflow: hidden;
     will-change: clip-path;
+  }
+
+  .interior__img--boxed {
+    height: auto;
+    border-radius: 24px;
+    border: 1px solid var(--line);
   }
 
   .interior__features {
@@ -91,8 +112,14 @@ const { interior } = Astro.props;
       gap: 28px;
     }
 
+    /* Квадрат вместо высокого кадра: меньше обрезки и увеличения широкого фото */
     .interior__img {
-      height: 70vh;
+      height: auto;
+      aspect-ratio: 1;
+    }
+
+    .interior__img--boxed {
+      border-radius: 18px;
     }
   }
 </style>

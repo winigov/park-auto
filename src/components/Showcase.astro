@@ -31,7 +31,7 @@ const multi = models.length > 1;
           class:list={['slide__bg', { 'slide__bg--offset': m.heroOffset }]}
           style={m.heroOffset ? `--hero-offset:${m.heroOffset}%` : undefined}
         >
-          <Media photo={m.hero} priority={i === 0} eager dark full />
+          <Media photo={m.hero} priority={i === 0} eager dark full need={1920} />
         </div>
         <div class="slide__shade" />
 

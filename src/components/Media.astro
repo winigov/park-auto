@@ -11,12 +11,23 @@ interface Props {
   class?: string;
   /** Тёмный плейсхолдер для тёмных секций */
   dark?: boolean;
-  /** Фото на весь экран (первый экран, салон): нарезаем до 2560 px, остальные — до 1600 px */
+  /** Крупное фото (первый экран, салон, цвета): нарезаем до 2560 px, остальные — до 1600 px */
   full?: boolean;
+  /** Минимальная ширина исходника для этого места, px — если фото меньше, сборка предупредит */
+  need?: number;
 }
 
-const { photo, sizes = '100vw', priority = false, eager = false, class: className, dark = false, full = false } = Astro.props;
-const widths = full ? [640, 960, 1280, 1920, 2560] : [480, 800, 1200, 1600];
+const { photo, sizes = '100vw', priority = false, eager = false, class: className, dark = false, full = false, need } = Astro.props;
+
+// Нарезка никогда не превышает исходник, а самая крупная версия — сам исходник в полном размере:
+// так маленькие фото не теряют ни одного пикселя и не растягиваются из уменьшенной копии.
+const native = photo.src?.width ?? 0;
+const cap = Math.min(native, full ? 2560 : 1600);
+const widths = [...[480, 800, 1200, 1600, 2000, 2560].filter((w) => w < cap * 0.9), cap];
+
+if (need && native && native < need) {
+  console.warn(`[фото] «${photo.shot}» — ${native} px, для этого места нужно от ${need} px: заменить на фото крупнее`);
+}
 ---
 
 {
@@ -26,7 +37,7 @@ const widths = full ? [640, 960, 1280, 1920, 2560] : [480, 800, 1200, 1600];
       alt={photo.alt}
       formats={['avif']}
       fallbackFormat="webp"
-      widths={widths.filter((w) => w <= photo.src!.width)}
+      widths={widths}
       sizes={sizes}
       loading={priority || eager ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}

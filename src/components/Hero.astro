@@ -17,7 +17,7 @@ const fromKg = minPrice(model.trims, 'kg');
     style={model.heroOffset ? `--hero-offset:${model.heroOffset}%` : undefined}
     data-hero-bg
   >
-    <Media photo={model.hero} priority dark full />
+    <Media photo={model.hero} priority dark full need={1920} />
   </div>
   <div class="hero__shade"></div>
 

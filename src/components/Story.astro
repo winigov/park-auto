@@ -15,7 +15,7 @@ const { chapters } = Astro.props;
         {
           chapters.map((c, i) => (
             <div class:list={['story__img', { 'is-active': i === 0 }]} data-story-img={i}>
-              <Media photo={c.photo} sizes="(max-width: 900px) 100vw, 60vw" />
+              <Media photo={c.photo} sizes="(max-width: 900px) 100vw, 60vw" full need={1300} />
             </div>
           ))
         }
@@ -56,9 +56,10 @@ const { chapters } = Astro.props;
 
   .story__frame {
     position: sticky;
-    top: calc(var(--header-h) + var(--demo-h) + 5vh);
-    height: calc(90vh - var(--header-h));
-    max-height: 760px;
+    top: calc(var(--header-h) + var(--demo-h) + 8vh);
+    /* Пропорции, близкие к фото: высокий кадр заставлял растягивать горизонтальные снимки */
+    aspect-ratio: 4 / 3;
+    max-height: min(calc(84vh - var(--header-h)), 640px);
     border-radius: var(--radius);
     overflow: hidden;
     background: var(--surface);
