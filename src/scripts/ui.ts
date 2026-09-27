@@ -113,12 +113,15 @@ if (!reduceMotion) {
     gsap.set(photo, { opacity: 0, scale: 1.12 });
     loaded.then(() => gsap.to(photo, { opacity: 1, scale: 1, duration: 2, ease: 'power2.out' }));
 
-    gsap.to(bg, {
-      yPercent: 10,
-      scale: 1.06,
-      ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
-    });
+    // Параллакс фото — только на широких экранах: на телефоне фото стоит отдельным блоком над ценами
+    if (matchMedia('(min-width: 721px)').matches) {
+      gsap.to(bg, {
+        yPercent: 10,
+        scale: 1.06,
+        ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
+      });
+    }
     gsap.to(blocks, {
       opacity: 0,
       y: -60,

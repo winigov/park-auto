@@ -26,7 +26,7 @@ const fromKg = minPrice(model.trims, 'kg');
       <span class:list={['badge', { 'badge--order': model.availability !== 'in-stock' }]}>
         {model.availability === 'in-stock' ? 'В наличии в Махачкале' : 'Под заказ'}
       </span>
-      <span class="badge">Учёт РФ и КР</span>
+      <span class="badge">Учёт РФ и КГ</span>
     </div>
     <p class="hero__brand">{model.brand}</p>
     <h1 class="h-display metal-text hero__title">
@@ -42,7 +42,7 @@ const fromKg = minPrice(model.trims, 'kg');
         <dd>от {formatPrice(fromRf)}</dd>
       </div>
       <div>
-        <dt>На учёте КР</dt>
+        <dt>На учёте КГ</dt>
         <dd>от {formatPrice(fromKg)}</dd>
       </div>
     </dl>
@@ -164,12 +164,28 @@ const fromKg = minPrice(model.trims, 'kg');
   }
 
   /* Телефон: фото — полосой посередине, чтобы машина не обрезалась */
+  /* Телефон: фото — отдельным блоком между заголовком и ценами, текст на машину не заходит */
   @media (max-width: 720px) and (orientation: portrait) {
+    .hero__top {
+      order: 1;
+    }
+
     .hero__bg {
-      inset: 30% 0 auto;
-      height: 46%;
-      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
-      mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
+      order: 2;
+      position: relative;
+      inset: auto;
+      top: auto;
+      z-index: 0;
+      flex: 0 0 auto;
+      height: clamp(200px, 34svh, 300px);
+      margin-top: 8px;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+    }
+
+    .hero__bottom {
+      order: 3;
+      padding-top: 16px;
     }
 
     .hero__shade {

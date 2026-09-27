@@ -365,7 +365,7 @@ p {
   white-space: nowrap;
 }
 
-/* Цены РФ/КР: переключаются RegSwitch внутри .reg-scope */
+/* Цены РФ/КГ: переключаются RegSwitch внутри .reg-scope */
 .price-kg {
   display: none;
 }

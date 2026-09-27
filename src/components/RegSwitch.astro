@@ -1,5 +1,5 @@
 ---
-// Переключатель цен «Учёт РФ / Учёт КР». Работает внутри блока с классом reg-scope:
+// Переключатель цен «Учёт РФ / Учёт КГ». Работает внутри блока с классом reg-scope:
 // элементы .price-rf и .price-kg показываются в зависимости от выбора (стили в global.css).
 interface Props {
   name: string;
@@ -16,7 +16,7 @@ const { name, class: className } = Astro.props;
   </label>
   <label>
     <input type="radio" name={name} value="kg" data-reg="kg" />
-    <span>Учёт КР</span>
+    <span>Учёт КГ</span>
   </label>
 </fieldset>
 

@@ -18,7 +18,7 @@ const cityIn = site.city === 'Махачкала' ? 'Махачкале' : site.
 
 const nav = [
   { href: '#models', label: 'Каталог' },
-  { href: '#registration', label: 'Учёт РФ/КР' },
+  { href: '#registration', label: 'Учёт РФ/КГ' },
   { href: '#credit', label: 'Кредит' },
   { href: '#about', label: 'О нас' },
   { href: '#contacts', label: 'Контакты' },
@@ -26,7 +26,7 @@ const nav = [
 
 const perks = [
   { title: 'Новые автомобили', text: 'Модели 2025–2026 годов в наличии и под заказ' },
-  { title: 'Учёт РФ или КР', text: 'Честно считаем оба варианта' },
+  { title: 'Учёт РФ или КГ', text: 'Честно считаем оба варианта' },
   { title: 'Кредит и трейд-ин', text: 'Банки-партнёры, ваш автомобиль в зачёт' },
   { title: 'Тест-драйв', text: `На площадке в ${cityIn}` },
 ];
@@ -75,7 +75,7 @@ const leadPhoto = featuredModels[0].ctaPhoto ?? featuredModels[0].hero;
 ---
 
 <Base
-  title={`Автомобили из Китая в ${cityIn} — цены, учёт РФ и КР | ${site.name}`}
+  title={`Автомобили из Китая в ${cityIn} — цены, учёт РФ и КГ | ${site.name}`}
   description={`${site.name}: новые автомобили из Китая в ${cityIn}. ${modelNames.join(', ')}. Учёт РФ и Кыргызстана, кредит, трейд-ин, тест-драйв.`}
   ogImage={featuredModels[0].hero.src?.src}
   jsonLd={jsonLd}

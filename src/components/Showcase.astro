@@ -15,7 +15,7 @@ const multi = models.length > 1;
 
 <section class:list={['showcase', { 'showcase--single': !multi }]} data-showcase data-hero aria-roledescription="карусель" aria-label="Модели в наличии">
   <h1 class="visually-hidden">
-    {site.name} — новые автомобили из Китая в {site.city === 'Махачкала' ? 'Махачкале' : site.city} на учёте РФ и КР
+    {site.name} — новые автомобили из Китая в {site.city === 'Махачкала' ? 'Махачкале' : site.city} на учёте РФ и КГ
   </h1>
 
   {
@@ -48,7 +48,7 @@ const multi = models.length > 1;
               <dd>от {formatPrice(minPrice(m.trims, 'rf'))}</dd>
             </div>
             <div>
-              <dt>На учёте КР</dt>
+              <dt>На учёте КГ</dt>
               <dd>от {formatPrice(minPrice(m.trims, 'kg'))}</dd>
             </div>
           </dl>
@@ -404,12 +404,27 @@ const multi = models.length > 1;
   }
 
   /* Телефон: фото полосой посередине, чтобы машина не обрезалась */
+  /* Телефон: фото — отдельным блоком между заголовком и ценами, текст на машину не заходит */
   @media (max-width: 720px) and (orientation: portrait) {
+    .slide__top {
+      order: 1;
+    }
+
     .slide__bg {
-      inset: 30% 0 auto;
-      height: 42%;
-      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
-      mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
+      order: 2;
+      position: relative;
+      inset: auto;
+      top: auto;
+      z-index: 0;
+      flex: 0 0 auto;
+      height: clamp(190px, 30svh, 280px);
+      margin-top: 8px;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+    }
+
+    .slide__bottom {
+      order: 3;
     }
 
     .slide__shade {
