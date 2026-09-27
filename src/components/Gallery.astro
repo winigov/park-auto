@@ -10,12 +10,12 @@ const { photos } = Astro.props;
 
 <section class="gallery" aria-label="Галерея">
   <div class="container gallery__head" data-reveal>
-    <h2 class="h-card">Галерея</h2>
+    <h2 class="gallery__title">Галерея</h2>
     <div class="gallery__nav">
-      <button type="button" data-gallery-prev aria-label="Назад">
+      <button type="button" class="gallery__btn" data-gallery-prev aria-label="Назад">
         <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </button>
-      <button type="button" data-gallery-next aria-label="Вперёд">
+      <button type="button" class="gallery__btn gallery__btn--next" data-gallery-next aria-label="Вперёд">
         <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </button>
     </div>
@@ -61,20 +61,35 @@ const { photos } = Astro.props;
     gap: 8px;
   }
 
-  .gallery__nav button {
+  .gallery__title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .gallery__btn {
     width: 48px;
     height: 48px;
     display: grid;
     place-items: center;
-    border: 0;
+    border: 1px solid var(--line-2);
     border-radius: 50%;
-    background: var(--bg-alt);
+    background: var(--surface);
+    color: var(--ink);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
   }
 
-  .gallery__nav button:hover {
-    background: var(--line);
+  .gallery__btn:hover {
+    border-color: var(--silver-2);
+  }
+
+  .gallery__btn--next {
+    border: 0;
+    background: var(--metal);
+    color: #08090b;
   }
 
   .gallery__nav svg {

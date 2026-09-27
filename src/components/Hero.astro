@@ -29,7 +29,7 @@ const fromKg = minPrice(model.trims, 'kg');
       <span class="badge">Учёт РФ и КР</span>
     </div>
     <p class="hero__brand">{model.brand}</p>
-    <h1 class="h-display hero__title">
+    <h1 class="h-display metal-text hero__title">
       <span class="visually-hidden">{model.brand} </span>{model.name}
     </h1>
     <p class="hero__tagline">{model.tagline}</p>
@@ -106,26 +106,25 @@ const fromKg = minPrice(model.trims, 'kg');
   }
 
   .hero__brand {
-    font-size: clamp(14px, 1.3vw, 17px);
-    font-weight: 700;
-    letter-spacing: 0.34em;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(12px, 1vw, 14px);
+    font-weight: 500;
+    letter-spacing: 0.42em;
     text-transform: uppercase;
-    color: rgb(255 255 255 / 0.75);
-    margin-bottom: 6px;
+    color: var(--silver);
   }
 
   .hero__title {
-    font-size: clamp(56px, 10vw, 150px);
-    text-shadow: 0 4px 40px rgb(0 0 0 / 0.25);
+    font-size: clamp(40px, 7.8vw, 112px);
   }
 
   .hero__tagline {
-    margin-top: 14px;
-    font-size: clamp(18px, 2vw, 26px);
+    margin-top: 16px;
+    font-size: clamp(16px, 1.7vw, 24px);
     font-weight: 500;
-    letter-spacing: -0.01em;
     max-width: 34ch;
-    color: rgb(255 255 255 / 0.9);
+    color: rgb(244 244 242 / 0.92);
   }
 
   .hero__bottom {
@@ -145,9 +144,9 @@ const fromKg = minPrice(model.trims, 'kg');
   }
 
   .hero__prices dt {
-    font-size: 14px;
-    color: var(--on-dark-2);
-    margin-bottom: 4px;
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 6px;
   }
 
   .hero__prices dd {
@@ -179,8 +178,8 @@ const fromKg = minPrice(model.trims, 'kg');
 
     .hero {
       background:
-        radial-gradient(120% 40% at 50% 8%, #1d2b45 0%, transparent 70%),
-        linear-gradient(180deg, #0c1220 0%, var(--dark) 70%);
+        radial-gradient(120% 40% at 50% 6%, #1c1f25 0%, transparent 70%),
+        var(--bg);
     }
   }
 

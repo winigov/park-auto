@@ -31,24 +31,24 @@ const [first, ...rest] = specs;
       </dl>
     </div>
 
-    <details class="specs__more">
-      <summary><span class="btn btn--ghost">Все характеристики</span></summary>
-      {
-        rest.map((g) => (
-          <div class="specs__group">
-            <h3 class="specs__title">{g.group}</h3>
-            <dl>
-              {g.items.map((s) => (
-                <div>
-                  <dt>{s.label}</dt>
-                  <dd>{s.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        ))
-      }
-    </details>
+    {
+      rest.map((g) => (
+        <details class="specs__more">
+          <summary>
+            <span class="specs__title">{g.group}</span>
+            <span class="specs__icon" aria-hidden="true" />
+          </summary>
+          <dl>
+            {g.items.map((s) => (
+              <div>
+                <dt>{s.label}</dt>
+                <dd>{s.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      ))
+    }
     <p class="price-note specs__note">{note}</p>
   </div>
 </section>
@@ -56,39 +56,49 @@ const [first, ...rest] = specs;
 <style>
   .specs__group {
     display: grid;
-    grid-template-columns: minmax(180px, 1fr) 3fr;
+    grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
     gap: 24px 48px;
-    padding: 32px 0;
-    border-top: 1px solid var(--line);
+    padding: 36px 0;
+    border-top: 1px solid var(--line-2);
   }
 
   .specs__title {
-    font-size: 20px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
   }
 
-  .specs__group dl {
+  .specs dl {
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 28px 32px;
   }
 
-  .specs__group dt {
-    font-size: 14px;
+  .specs dt {
+    margin-bottom: 6px;
+    font-size: 13px;
     color: var(--ink-3);
-    margin-bottom: 4px;
   }
 
-  .specs__group dd {
+  .specs dd {
     margin: 0;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+
+  .specs__more {
+    border-top: 1px solid var(--line-2);
   }
 
   .specs__more summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 72px;
     list-style: none;
-    margin-top: 24px;
     cursor: pointer;
   }
 
@@ -96,27 +106,93 @@ const [first, ...rest] = specs;
     display: none;
   }
 
-  .specs__more[open] summary {
-    display: none;
+  .specs__more dl {
+    padding: 8px 0 36px;
+  }
+
+  @media (min-width: 861px) {
+    /* раскрытая группа — той же колонкой, что «Основное» */
+    .specs__more dl {
+      margin-left: calc(280px + 48px);
+    }
+  }
+
+  .specs__icon {
+    flex-shrink: 0;
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #33363c;
+    transition:
+      background-color 0.3s,
+      border-color 0.3s;
+  }
+
+  .specs__icon::before,
+  .specs__icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 2px;
+    margin: -1px 0 0 -6px;
+    border-radius: 2px;
+    background: var(--ink);
+    transition:
+      transform 0.3s var(--ease),
+      background-color 0.3s;
+  }
+
+  .specs__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .specs__more summary:hover .specs__icon {
+    border-color: var(--silver-2);
+  }
+
+  .specs__more[open] .specs__icon {
+    border-color: transparent;
+    background: var(--metal);
+  }
+
+  .specs__more[open] .specs__icon::before,
+  .specs__more[open] .specs__icon::after {
+    background: #08090b;
+  }
+
+  .specs__more[open] .specs__icon::after {
+    transform: rotate(0deg);
   }
 
   .specs__note {
-    margin-top: 32px;
-    max-width: 80ch;
+    margin-top: 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-2);
+    max-width: 90ch;
+  }
+
+  @media (max-width: 1080px) {
+    .specs dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 860px) {
     .specs__group {
       grid-template-columns: 1fr;
     }
+  }
 
-    .specs__group dl {
-      grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 480px) {
+    .specs dl {
       gap: 20px 16px;
     }
 
-    .specs__group dd {
-      font-size: 16px;
+    .specs dd {
+      font-size: 15px;
     }
   }
 </style>

@@ -59,6 +59,8 @@ if (mbar) {
     { threshold: 0.25 },
   );
   [hero, document.querySelector('#test-drive')].forEach((el) => el && io.observe(el));
+  // сразу при загрузке, не дожидаясь первого срабатывания наблюдателя, — чтобы панель не мелькала на первом экране
+  if (hero && hero.getBoundingClientRect().bottom > innerHeight * 0.25) mbar.classList.add('is-hidden');
 }
 
 // --- История модели: какой кадр показывать в «липком» окне ---

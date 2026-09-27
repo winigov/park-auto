@@ -40,38 +40,48 @@ import { registration } from '../data/registration';
 </section>
 
 <style>
+  .reg {
+    border-top: 1px solid var(--line);
+  }
+
   .reg__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
 
   .reg__card {
     display: flex;
     flex-direction: column;
-    padding: clamp(28px, 4vw, 48px);
-    border-radius: var(--radius);
-    background: var(--bg-alt);
+    padding: clamp(28px, 3.4vw, 44px);
+    border-radius: 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
   }
 
   .reg__tag {
     align-self: flex-start;
     padding: 6px 14px;
     border-radius: 999px;
-    background: var(--ink);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    background: linear-gradient(180deg, #fdfdfd 0%, #c9ccd1 100%);
+    color: #08090b;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
   }
 
   .reg__title {
     margin-top: 24px;
-    font-size: clamp(26px, 3vw, 36px);
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.4vw, 30px);
+    font-weight: 600;
   }
 
   .reg__summary {
     margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.55;
     color: var(--ink-2);
   }
 
@@ -87,37 +97,44 @@ import { registration } from '../data/registration';
 
   .reg__list li {
     position: relative;
-    padding-left: 30px;
+    padding-left: 34px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: #d7d9dc;
   }
 
   .reg__list li::before {
     position: absolute;
     left: 0;
-    top: 1px;
-    width: 20px;
-    height: 20px;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    box-sizing: border-box;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 13px;
     font-weight: 800;
-    color: #fff;
   }
 
   .reg__list .is-plus::before {
     content: '+';
-    background: var(--ok);
+    background: var(--silver);
+    color: #08090b;
+    font-size: 15px;
   }
 
   .reg__list .is-note::before {
     content: '!';
-    background: #d97706;
+    border: 1.5px solid #8d9199;
+    color: var(--ink);
+    font-size: 13px;
   }
 
   .reg__for {
     padding-top: 20px;
     border-top: 1px solid var(--line);
     font-size: 15px;
+    line-height: 1.5;
     color: var(--ink-2);
   }
 
@@ -132,21 +149,22 @@ import { registration } from '../data/registration';
     align-items: center;
     justify-content: space-between;
     gap: 20px 32px;
-    padding: clamp(24px, 3vw, 36px) clamp(28px, 4vw, 48px);
-    border-radius: var(--radius);
-    background: var(--ink);
-    color: #fff;
+    padding: clamp(24px, 2.6vw, 30px) clamp(28px, 3.4vw, 44px);
+    border-radius: 22px;
+    background: linear-gradient(120deg, #1c1e23 0%, var(--surface) 100%);
+    border: 1px solid var(--line-2);
   }
 
   .reg__cta p {
-    max-width: 52ch;
+    max-width: 56ch;
     font-size: 18px;
     font-weight: 600;
+    line-height: 1.45;
   }
 
   .reg__note {
-    margin-top: 24px;
-    max-width: 80ch;
+    margin-top: 20px;
+    max-width: 90ch;
   }
 
   @media (max-width: 860px) {

@@ -38,11 +38,16 @@ const { interior } = Astro.props;
 <style>
   .interior {
     background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+
+  .interior .section-head {
+    margin-bottom: 48px;
   }
 
   .interior__stage {
     overflow: hidden;
-    overflow: clip; /* обрезает, но не делает блок прокручиваемым */
+    overflow: clip;
   }
 
   .interior__img {
@@ -53,24 +58,39 @@ const { interior } = Astro.props;
 
   .interior__features {
     list-style: none;
-    margin: clamp(48px, 7vw, 96px) 0 0;
+    margin: clamp(48px, 6vw, 72px) 0 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 40px 32px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
   }
 
   .interior__features li {
-    border-top: 1px solid var(--line);
+    display: grid;
+    align-content: start;
+    gap: 10px;
     padding-top: 22px;
+    border-top: 1px solid var(--line-2);
   }
 
   .interior__features p {
-    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.55;
     color: var(--ink-2);
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 960px) {
+    .interior__features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .interior__features {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
     .interior__img {
       height: 70vh;
     }

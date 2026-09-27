@@ -33,7 +33,7 @@ const { trims, colors } = Astro.props;
               <span class="price-rf">{formatPrice(t.prices.rf)}</span>
               <span class="price-kg">{formatPrice(t.prices.kg)}</span>
             </p>
-            <ul class="trim__features">
+            <ul class="trim__features check-list">
               {t.features.map((f) => (
                 <li>{f}</li>
               ))}
@@ -74,6 +74,10 @@ const { trims, colors } = Astro.props;
 </section>
 
 <style>
+  .trims {
+    border-top: 1px solid var(--line);
+  }
+
   .trims__head {
     display: flex;
     flex-wrap: wrap;
@@ -83,7 +87,7 @@ const { trims, colors } = Astro.props;
   }
 
   .trims__head :global(.trims__reg) {
-    margin-bottom: clamp(40px, 6vw, 72px);
+    margin-bottom: clamp(40px, 5vw, 56px);
   }
 
   .trims__grid {
@@ -91,19 +95,30 @@ const { trims, colors } = Astro.props;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
   }
 
+  .trims__grid:has(> :nth-child(2):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .trims__grid:has(> :nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   @media (max-width: 1180px) {
-    .trims__grid {
-      grid-template-columns: repeat(2, 1fr);
+    .trims__grid,
+    .trims__grid:has(> :nth-child(3):last-child) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       row-gap: 28px;
     }
   }
 
   @media (max-width: 640px) {
-    .trims__grid {
+    .trims__grid,
+    .trims__grid:has(> :nth-child(2):last-child),
+    .trims__grid:has(> :nth-child(3):last-child) {
       grid-template-columns: 1fr;
     }
   }
@@ -112,37 +127,41 @@ const { trims, colors } = Astro.props;
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: clamp(24px, 3vw, 36px);
-    border-radius: var(--radius);
-    background: #fff;
+    padding: 32px 28px 28px;
+    border-radius: 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
   }
 
   .trim--popular {
-    box-shadow:
-      0 0 0 2px var(--accent),
-      0 24px 60px -24px rgb(47 107 255 / 0.35);
+    border-color: var(--silver);
+    box-shadow: 0 30px 70px -40px rgb(233 235 238 / 0.45);
   }
 
   .trim__flag {
     position: absolute;
     top: -13px;
-    left: 28px;
-    padding: 4px 12px;
+    left: 26px;
+    padding: 5px 12px;
     border-radius: 999px;
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: linear-gradient(180deg, #fdfdfd 0%, #c9ccd1 100%);
+    color: #08090b;
     font-size: 12px;
     font-weight: 700;
   }
 
   .trim__name {
-    font-size: 26px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
   }
 
   .trim__sub {
     margin-top: 6px;
     color: var(--ink-2);
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .trim__price {
@@ -154,32 +173,10 @@ const { trims, colors } = Astro.props;
   }
 
   .trim__features {
-    list-style: none;
-    margin: 0 0 28px;
-    padding: 20px 0 0;
-    border-top: 1px solid var(--line);
-    display: grid;
-    align-content: start;
-    gap: 10px;
-    font-size: 15px;
     flex: 1;
-  }
-
-  .trim__features li {
-    display: flex;
-    gap: 10px;
-  }
-
-  .trim__features li::before {
-    content: '';
-    flex: 0 0 18px;
-    height: 18px;
-    margin-top: 2px;
-    border-radius: 50%;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.5l2.5 2.5L13 6.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-        center / contain no-repeat,
-      var(--ink);
+    margin: 0 0 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
   }
 
   .trims__colors {
@@ -201,7 +198,7 @@ const { trims, colors } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     gap: 12px 24px;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--ink-2);
   }
 
@@ -212,17 +209,17 @@ const { trims, colors } = Astro.props;
   }
 
   .swatch {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: var(--c);
     box-shadow:
-      inset 0 0 0 1px rgb(0 0 0 / 0.12),
-      inset 0 6px 8px rgb(255 255 255 / 0.25);
+      inset 0 0 0 1px rgb(255 255 255 / 0.18),
+      inset 0 6px 8px rgb(255 255 255 / 0.15);
   }
 
   .trims__note {
-    margin-top: 32px;
+    margin-top: 28px;
     max-width: 70ch;
   }
 </style>

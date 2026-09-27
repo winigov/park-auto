@@ -7,7 +7,7 @@ interface Props {
 const { tech } = Astro.props;
 ---
 
-<section class="tech section section--dark" id="tech">
+<section class="tech section section--alt has-dots" id="tech">
   <div class="container">
     <div class="section-head" data-reveal>
       <span class="eyebrow">Технологии</span>
@@ -19,7 +19,7 @@ const { tech } = Astro.props;
       {
         tech.points.map((p) => (
           <li class="tech__card" data-reveal>
-            <p class="tech__value">{p.value}</p>
+            <p class="tech__value metal-text">{p.value}</p>
             <p class="tech__label">{p.label}</p>
           </li>
         ))
@@ -29,36 +29,58 @@ const { tech } = Astro.props;
 </section>
 
 <style>
+  .tech {
+    border-top: 1px solid var(--line);
+  }
+
   .tech__grid {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
 
   .tech__card {
-    padding: clamp(24px, 3vw, 36px);
+    padding: clamp(24px, 2.6vw, 32px);
     border-radius: var(--radius);
-    background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
-    border: 1px solid var(--dark-line);
-    min-height: 200px;
+    background: linear-gradient(160deg, #17191e 0%, #111215 100%);
+    border: 1px solid var(--line);
+    min-height: 190px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 24px;
+    gap: 28px;
   }
 
   .tech__value {
-    font-size: clamp(30px, 3.4vw, 44px);
-    font-weight: 800;
-    letter-spacing: -0.035em;
+    font-family: var(--font-display);
+    font-size: clamp(28px, 2.8vw, 36px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
     line-height: 1.05;
   }
 
   .tech__label {
-    color: var(--on-dark-2);
-    font-size: 16px;
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 960px) {
+    .tech__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .tech__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tech__card {
+      min-height: 0;
+    }
   }
 </style>

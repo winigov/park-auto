@@ -73,15 +73,18 @@ const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
     display: flex;
     flex-direction: column;
     border-radius: var(--radius);
-    background: #fff;
+    background: var(--surface);
+    border: 1px solid var(--line);
     overflow: hidden;
     transition:
+      border-color 0.4s,
       box-shadow 0.4s var(--ease),
       transform 0.4s var(--ease);
   }
 
   .mc:hover {
-    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.3);
+    border-color: #3a3d44;
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
     transform: translateY(-4px);
   }
 
@@ -93,7 +96,7 @@ const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
     display: block;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: var(--dark);
+    background: var(--surface-3);
   }
 
   .mc__img :global(.media) {
@@ -114,40 +117,41 @@ const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
   }
 
   .mc__badge {
-    padding: 5px 11px;
+    padding: 5px 10px;
     border-radius: 999px;
-    background: rgb(255 255 255 / 0.9);
+    background: rgb(8 9 11 / 0.72);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ink-2);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
   }
 
   .mc__badge--new {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  .mc__badge--stock {
-    color: #15803d;
+    background: linear-gradient(180deg, #fdfdfd 0%, #c9ccd1 100%);
+    color: #08090b;
+    font-weight: 700;
   }
 
   .mc__body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 22px 24px 24px;
+    padding: 20px 22px 22px;
   }
 
   .mc__meta {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--ink-3);
   }
 
   .mc__name {
-    margin-top: 6px;
-    font-size: clamp(24px, 2.2vw, 30px);
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(20px, 1.7vw, 23px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
   }
 
   .mc__name a {
@@ -155,7 +159,7 @@ const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
   }
 
   .mc__name a::after {
-    /* вся верхняя часть карточки кликабельна через заголовок */
+    /* вся картинка кликабельна через заголовок */
     content: '';
     position: absolute;
     inset: 0 0 auto;
@@ -164,66 +168,68 @@ const seatsGroup = m.seats >= 6 ? '6+' : String(m.seats);
 
   .mc__brand {
     display: block;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    color: var(--silver-2);
   }
 
   .mc__hl {
     list-style: none;
-    margin: 20px 0 22px;
-    padding: 16px 0 0;
+    margin: 16px 0 18px;
+    padding: 14px 0 0;
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .mc__hl b {
     display: block;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     white-space: nowrap;
   }
 
   .mc__hl span {
     display: block;
-    font-size: 12.5px;
-    line-height: 1.35;
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.3;
     color: var(--ink-3);
   }
 
   .mc__foot {
     margin-top: auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
+    display: grid;
+    gap: 16px;
   }
 
   .mc__price {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 800;
     letter-spacing: -0.02em;
     white-space: nowrap;
   }
 
   .mc__from {
-    font-size: 15px;
+    margin-right: 4px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--ink-3);
-    margin-right: 4px;
   }
 
   .mc__actions {
-    display: flex;
-    gap: 8px;
     position: relative;
     z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mc__actions .btn {
+    padding: 0 12px;
   }
 </style>

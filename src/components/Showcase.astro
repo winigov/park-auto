@@ -37,7 +37,7 @@ const multi = models.length > 1;
 
         <div class="container slide__top">
           <p class="slide__brand">{m.brand}</p>
-          <h2 class="h-display slide__name">{m.name}</h2>
+          <h2 class="h-display metal-text slide__name">{m.name}</h2>
           <p class="slide__tagline">{m.tagline}</p>
         </div>
 
@@ -269,25 +269,25 @@ const multi = models.length > 1;
   }
 
   .slide__brand {
-    font-size: clamp(14px, 1.3vw, 17px);
-    font-weight: 700;
-    letter-spacing: 0.34em;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(12px, 1vw, 14px);
+    font-weight: 500;
+    letter-spacing: 0.42em;
     text-transform: uppercase;
-    color: rgb(255 255 255 / 0.75);
-    margin-bottom: 6px;
+    color: var(--silver);
   }
 
   .slide__name {
-    font-size: clamp(56px, 10vw, 150px);
-    text-shadow: 0 4px 40px rgb(0 0 0 / 0.25);
+    font-size: clamp(40px, 7.8vw, 112px);
   }
 
   .slide__tagline {
-    margin-top: 14px;
-    font-size: clamp(18px, 2vw, 26px);
+    margin-top: 16px;
+    font-size: clamp(16px, 1.7vw, 24px);
     font-weight: 500;
     max-width: 34ch;
-    color: rgb(255 255 255 / 0.9);
+    color: rgb(244 244 242 / 0.92);
   }
 
   .slide__bottom {
@@ -305,9 +305,9 @@ const multi = models.length > 1;
   }
 
   .slide__prices dt {
-    font-size: 14px;
-    color: var(--on-dark-2);
-    margin-bottom: 4px;
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 6px;
   }
 
   .slide__prices dd {
@@ -363,7 +363,7 @@ const multi = models.length > 1;
     height: 3px;
     margin-bottom: 12px;
     border-radius: 2px;
-    background: rgb(255 255 255 / 0.22);
+    background: rgb(255 255 255 / 0.18);
     overflow: hidden;
   }
 
@@ -371,7 +371,7 @@ const multi = models.length > 1;
     display: block;
     height: 100%;
     width: 100%;
-    background: #fff;
+    background: linear-gradient(90deg, #8d9199 0%, #f4f4f2 100%);
     transform: scaleX(0);
     transform-origin: left;
   }
@@ -392,6 +392,7 @@ const multi = models.length > 1;
 
   .tab__name {
     font-size: 15px;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -417,8 +418,8 @@ const multi = models.length > 1;
 
     .showcase {
       background:
-        radial-gradient(120% 40% at 50% 8%, #1d2b45 0%, transparent 70%),
-        linear-gradient(180deg, #0c1220 0%, var(--dark) 70%);
+        radial-gradient(120% 40% at 50% 6%, #1c1f25 0%, transparent 70%),
+        var(--bg);
     }
   }
 

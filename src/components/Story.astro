@@ -29,7 +29,7 @@ const { chapters } = Astro.props;
             <div class="story__img-mobile">
               <Media photo={c.photo} sizes="100vw" />
             </div>
-            <span class="eyebrow">{c.eyebrow}</span>
+            <span class="eyebrow">{String(i + 1).padStart(2, '0')} / {String(chapters.length).padStart(2, '0')} · {c.eyebrow}</span>
             <h2 class="h-section">{c.title}</h2>
             <p class="lead">{c.text}</p>
           </article>
@@ -61,7 +61,7 @@ const { chapters } = Astro.props;
     max-height: 760px;
     border-radius: var(--radius);
     overflow: hidden;
-    background: var(--bg-alt);
+    background: var(--surface);
   }
 
   .story__img {
@@ -88,8 +88,7 @@ const { chapters } = Astro.props;
   }
 
   .story__step h2 {
-    margin-bottom: 20px;
-    font-size: clamp(32px, 3.8vw, 54px);
+    margin-bottom: 22px;
   }
 
   .story__img-mobile {

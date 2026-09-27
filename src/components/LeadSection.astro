@@ -28,7 +28,7 @@ const { model = '', models = [], trims = [], photo, title = `Почувству�
       </p>
     </div>
     <div class="lead-sec__card" data-reveal>
-      <LeadForm id="section" model={model} models={models} trims={trims} dark />
+      <LeadForm id="section" model={model} models={models} trims={trims} />
     </div>
   </div>
 </section>
@@ -37,41 +37,55 @@ const { model = '', models = [], trims = [], photo, title = `Почувству�
   .lead-sec {
     position: relative;
     overflow: hidden;
-    overflow: clip; /* обрезает, но не делает блок прокручиваемым */
+    overflow: clip;
     isolation: isolate;
+    border-top: 1px solid var(--line);
   }
 
   .lead-sec__bg {
     position: absolute;
     inset: 0;
     z-index: -1;
-    opacity: 0.35;
+    opacity: 0.4;
   }
 
   .lead-sec__bg::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, var(--dark) 20%, rgb(8 9 11 / 0.4));
+    background: linear-gradient(90deg, var(--bg) 22%, rgb(8 9 11 / 0.45) 100%);
   }
 
   .lead-sec__grid {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 500px);
     gap: clamp(32px, 6vw, 96px);
     align-items: center;
   }
 
+  .lead-sec .lead {
+    color: #c3c6cb;
+  }
+
   .lead-sec__card {
-    padding: clamp(24px, 4vw, 40px);
-    border-radius: var(--radius);
-    background: var(--dark-2);
-    border: 1px solid var(--dark-line);
+    padding: clamp(24px, 3vw, 36px);
+    border-radius: 24px;
+    background: rgb(18 19 23 / 0.92);
+    border: 1px solid var(--line-2);
+    --f-surface: rgb(18 19 23);
+  }
+
+  .lead-sec__card :global(.lead-form) {
+    --f-surface: #121317;
   }
 
   @media (max-width: 900px) {
     .lead-sec__grid {
       grid-template-columns: 1fr;
+    }
+
+    .lead-sec__bg::after {
+      background: linear-gradient(180deg, var(--bg) 10%, rgb(8 9 11 / 0.7) 100%);
     }
   }
 </style>

@@ -5,7 +5,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<section class="faq section section--alt" id="faq">
+<section class="faq section" id="faq">
   <div class="container faq__grid">
     <div class="section-head" data-reveal>
       <span class="eyebrow">Вопросы и ответы</span>
@@ -16,7 +16,10 @@ const { items } = Astro.props;
       {
         items.map((item) => (
           <details class="faq__item" data-reveal>
-            <summary>{item.q}</summary>
+            <summary>
+              <span>{item.q}</span>
+              <span class="faq__icon" aria-hidden="true" />
+            </summary>
             <p>{item.a}</p>
           </details>
         ))
@@ -26,23 +29,32 @@ const { items } = Astro.props;
 </section>
 
 <style>
+  .faq {
+    border-top: 1px solid var(--line);
+  }
+
   .faq__grid {
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: clamp(24px, 6vw, 96px);
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 96px);
     align-items: start;
   }
 
   .faq__item {
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--line-2);
   }
 
   .faq__item summary {
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 76px;
+    padding: 16px 0;
     list-style: none;
-    padding: 24px 48px 24px 0;
-    font-size: clamp(18px, 1.6vw, 20px);
+    font-size: clamp(17px, 1.5vw, 20px);
     font-weight: 700;
+    line-height: 1.35;
     cursor: pointer;
   }
 
@@ -50,32 +62,70 @@ const { items } = Astro.props;
     display: none;
   }
 
-  .faq__item summary::after {
-    content: '';
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    margin-top: -7px;
-    background:
-      linear-gradient(currentColor, currentColor) center / 14px 2px no-repeat,
-      linear-gradient(currentColor, currentColor) center / 2px 14px no-repeat;
-    transition: transform 0.3s var(--ease);
+  .faq__icon {
+    flex-shrink: 0;
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #33363c;
+    transition:
+      background-color 0.3s,
+      border-color 0.3s;
   }
 
-  .faq__item[open] summary::after {
-    transform: rotate(45deg);
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 2px;
+    margin: -1px 0 0 -6px;
+    border-radius: 2px;
+    background: var(--ink);
+    transition:
+      transform 0.3s var(--ease),
+      background-color 0.3s;
+  }
+
+  .faq__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .faq__item summary:hover .faq__icon {
+    border-color: var(--silver-2);
+  }
+
+  .faq__item[open] .faq__icon {
+    border-color: transparent;
+    background: var(--metal);
+  }
+
+  .faq__item[open] .faq__icon::before,
+  .faq__item[open] .faq__icon::after {
+    background: #08090b;
+  }
+
+  .faq__item[open] .faq__icon::after {
+    transform: rotate(0deg);
   }
 
   .faq__item p {
-    padding: 0 48px 24px 0;
+    padding: 0 60px 26px 0;
+    font-size: 16px;
+    line-height: 1.6;
     color: var(--ink-2);
   }
 
   @media (max-width: 900px) {
     .faq__grid {
       grid-template-columns: 1fr;
+    }
+
+    .faq__item p {
+      padding-right: 0;
     }
   }
 </style>

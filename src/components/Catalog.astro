@@ -35,7 +35,7 @@ const showFilters = filters && groups.length > 0;
 const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 'моделей'])}`;
 ---
 
-<section class:list={['catalog section reg-scope', { 'section--alt': alt }]} id={id} data-catalog>
+<section class:list={['catalog section reg-scope', { 'section--alt': alt, 'has-dots': !alt }]} id={id} data-catalog>
   <div class="container">
     <div class="catalog__head">
       <div class="section-head" data-reveal>
@@ -155,30 +155,26 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
   }
 
   .chip {
-    padding: 9px 16px;
+    padding: 10px 18px;
     border: 0;
     border-radius: 999px;
-    background: var(--bg-alt);
+    background: var(--surface-3);
     font-size: 14px;
     font-weight: 600;
-    color: var(--ink-2);
+    color: var(--silver);
     cursor: pointer;
     transition:
       background-color 0.2s,
       color 0.2s;
   }
 
-  .section--alt .chip {
-    background: #fff;
-  }
-
   .chip:hover {
-    color: var(--ink);
+    color: #fff;
   }
 
   .chip[aria-pressed='true'] {
     background: var(--ink);
-    color: #fff;
+    color: #08090b;
   }
 
   .catalog__count {
@@ -187,14 +183,14 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
     color: var(--ink-3);
   }
 
+  .catalog {
+    border-top: 1px solid var(--line);
+  }
+
   .catalog__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
     gap: 16px;
-  }
-
-  .catalog:not(.section--alt) .catalog__grid :global(.mc) {
-    background: var(--bg-alt);
   }
 
   .catalog__empty {
@@ -202,7 +198,7 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
     justify-items: center;
     gap: 16px;
     padding: 48px 24px;
-    border: 2px dashed var(--line);
+    border: 1.5px dashed var(--line-2);
     border-radius: var(--radius);
     text-align: center;
     color: var(--ink-2);

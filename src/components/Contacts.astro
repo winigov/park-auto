@@ -4,7 +4,7 @@ const { lat, lon } = site.geo;
 const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lon}%2C${lat}&z=13&pt=${lon}%2C${lat}%2Cpm2blm`;
 ---
 
-<section class="contacts section" id="contacts">
+<section class="contacts section section--alt" id="contacts">
   <div class="container contacts__grid">
     <div class="contacts__info" data-reveal>
       <span class="eyebrow">Контакты</span>
@@ -35,9 +35,13 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lon}%2C${lat}&z=13&pt=${lo
 </section>
 
 <style>
+  .contacts {
+    border-top: 1px solid var(--line);
+  }
+
   .contacts__grid {
     display: grid;
-    grid-template-columns: 1fr 1.3fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
     gap: clamp(32px, 5vw, 72px);
     align-items: stretch;
   }
@@ -53,12 +57,12 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lon}%2C${lat}&z=13&pt=${lo
   }
 
   .contacts dt {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--ink-3);
   }
 
   .contacts dd {
-    margin: 2px 0 0;
+    margin: 4px 0 0;
     font-size: 20px;
     font-weight: 700;
   }
@@ -74,23 +78,31 @@ const mapSrc = `https://yandex.ru/map-widget/v1/?ll=${lon}%2C${lat}&z=13&pt=${lo
   }
 
   .contacts__map {
-    min-height: 420px;
-    border-radius: var(--radius);
+    min-height: 440px;
+    border-radius: 24px;
     overflow: hidden;
-    background: var(--bg-alt);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
   }
 
   .contacts__map iframe {
+    display: block;
     width: 100%;
     height: 100%;
-    min-height: 420px;
+    min-height: 440px;
     border: 0;
-    display: block;
+    /* светлая карта → тёмная, в тон сайту */
+    filter: invert(0.92) hue-rotate(180deg) saturate(0.35) brightness(0.95) contrast(0.92);
   }
 
   @media (max-width: 900px) {
     .contacts__grid {
       grid-template-columns: 1fr;
+    }
+
+    .contacts__map,
+    .contacts__map iframe {
+      min-height: 340px;
     }
   }
 </style>
