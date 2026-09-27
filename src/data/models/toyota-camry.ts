@@ -1,11 +1,10 @@
 import type { CarModel } from '../types';
 
-// Фото — официальные материалы GAC Toyota (gac-toyota.com.cn), 1920 px, ВРЕМЕННО для прототипа.
-// TODO: до запуска заменить на свои фото (особенно задний ряд — официального фото в хорошем качестве нет).
+// Фото — официальные материалы GAC Toyota (gac-toyota.com.cn) в улучшенном качестве, 1672 px, ВРЕМЕННО для прототипа.
+// TODO: до запуска заменить на свои фото.
 import hero from '../../assets/camry/hero.jpg';
 import side from '../../assets/camry/side.jpg';
 import rear from '../../assets/camry/rear.jpg';
-import detail from '../../assets/camry/detail.jpg';
 import cabin from '../../assets/camry/interior-cabin.jpg';
 import lineup from '../../assets/camry/lineup.jpg';
 import optics from '../../assets/camry/optics.jpg';
@@ -16,6 +15,7 @@ import ambient from '../../assets/camry/ambient.jpg';
 import frontSeats from '../../assets/camry/front-seats.jpg';
 import wireless from '../../assets/camry/wireless.jpg';
 import rearSeats from '../../assets/camry/rear-seats.jpg';
+import multimedia from '../../assets/camry/multimedia.jpg';
 
 // «Camry 85» на рынке — обновлённая китайская GAC Toyota Camry 2027 модельного года (рестайлинг 9-го поколения, XV80).
 // TODO: уточнить у «Парк Авто», продают ли они именно рестайлинг (экран 15,6″) или дорестайлинг «80».
@@ -69,7 +69,7 @@ const model: CarModel = {
       size: 'wide',
       title: 'Экран 15,6″ в каждой версии',
       text: 'Чип Snapdragon 8155P, цифровые приборы 8,8″ и подключение смартфона через CarPlay и HiCar.',
-      photo: { src: dashboard, alt: 'Передняя панель Toyota Camry с экраном 15,6 дюйма', shot: 'Панель и экран', focus: '60% 50%' },
+      photo: { src: dashboard, alt: 'Передняя панель Toyota Camry с экраном 15,6 дюйма', shot: 'Панель и экран', focus: '45% 55%' },
     },
     {
       title: 'Беспроводная зарядка 50 Вт',
@@ -84,7 +84,7 @@ const model: CarModel = {
     {
       title: 'Комфорт на заднем ряду',
       text: 'Подогрев, вентиляция и электроприводы спинок задних кресел — в гибридах HG и выше.',
-      photo: { src: rearSeats, alt: 'Задние сиденья Toyota Camry с подогревом и вентиляцией', shot: 'Задние сиденья', focus: '45% 50%' },
+      photo: { src: rearSeats, alt: 'Задние сиденья Toyota Camry с подогревом и вентиляцией', shot: 'Задние сиденья', focus: '50% 55%' },
     },
     {
       title: 'Подсветка на 64 цвета',
@@ -94,7 +94,7 @@ const model: CarModel = {
     {
       title: 'Место водителя',
       text: 'Проекция на лобовое стекло, кресло с электроприводом и памятью, система контроля внимания водителя.',
-      photo: { src: driver, alt: 'Водитель за рулём Toyota Camry', shot: 'Место водителя', focus: '35% 40%' },
+      photo: { src: driver, alt: 'Водитель за рулём Toyota Camry', shot: 'Место водителя', focus: '45% 40%' },
     },
     {
       size: 'wide',
@@ -109,9 +109,9 @@ const model: CarModel = {
     },
     {
       size: 'wide',
-      title: 'Цифровые приборы',
-      text: 'Приборная панель 8,8″ и экран мультимедиа образуют единую линию перед водителем.',
-      photo: { src: screen, alt: 'Цифровые приборы и экран Toyota Camry', shot: 'Приборы и экран', focus: '55% 50%' },
+      title: 'Всё на одном экране',
+      text: 'Навигация, музыка и климат — крупными плитками, которыми удобно пользоваться на ходу.',
+      photo: { src: multimedia, alt: 'Интерфейс мультимедиа Toyota Camry', shot: 'Интерфейс мультимедиа', focus: '55% 45%' },
     },
   ],
 
@@ -120,19 +120,19 @@ const model: CarModel = {
       eyebrow: 'Дизайн',
       title: 'Длинная, низкая, узнаваемая',
       text: 'Длина 4915 мм и колёсная база 2825 мм. В версии Sport Plus — удлинённый бампер, спортивный обвес и диски R19.',
-      photo: { src: side, alt: 'Toyota Camry в движении у моря, вид сверху', shot: 'Экстерьер в движении', focus: '50% 62%' },
+      photo: { src: side, alt: 'Toyota Camry у моря, вид сверху', shot: 'Экстерьер у моря', focus: '62% 55%' },
     },
     {
       eyebrow: 'Гибрид',
       title: 'Экономия, которую видно на заправке',
       text: 'Гибрид Toyota пятого поколения: 197 л.с. и расход 4,2 литра на 100 км по WLTC. Заряжать не нужно, бензин — обычный АИ-92.',
-      photo: { src: rear, alt: 'Toyota Camry, вид сзади-сбоку', shot: 'Вид 3/4 сзади', focus: '55% 60%' },
+      photo: { src: rear, alt: 'Toyota Camry, вид сзади-сбоку', shot: 'Вид 3/4 сзади', focus: '80% 60%' },
     },
     {
       eyebrow: 'Обновление 2027',
       title: 'Экран 15,6″ в каждой версии',
       text: 'С обновлением все версии получили экран 15,6″ на чипе Snapdragon 8155P, цифровые приборы 8,8″ и беспроводную зарядку на 50 Вт.',
-      photo: { src: detail, alt: 'Экран 15,6 дюйма в салоне Toyota Camry', shot: 'Деталь: экран', focus: '62% 50%' },
+      photo: { src: screen, alt: 'Руль, цифровые приборы и экран 15,6 дюйма Toyota Camry', shot: 'Руль и экран', focus: '60% 50%' },
     },
   ],
 
@@ -150,7 +150,7 @@ const model: CarModel = {
     ],
   },
 
-  ctaPhoto: { src: side, alt: '', shot: 'Экстерьер', focus: '42% 62%' },
+  ctaPhoto: { src: side, alt: '', shot: 'Экстерьер', focus: '62% 55%' },
 
   tech: {
     title: 'Гибрид или бензин — на выбор',
