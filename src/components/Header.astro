@@ -430,7 +430,9 @@ const { nav } = Astro.props;
       border: 0;
       box-shadow: none;
       opacity: 1;
-      visibility: visible;
+      /* inherit, не visible: иначе при закрытом меню список моделей остаётся невидимым,
+         но кликабельным слоем поверх страницы и перехватывает касания */
+      visibility: inherit;
       transform: none;
     }
 
