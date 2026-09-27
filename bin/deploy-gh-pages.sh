@@ -9,7 +9,8 @@ REPO_URL=$(git remote get-url origin)
 GH_PAGES=1 PUBLIC_DEMO=1 npx astro build
 
 # git с авторизацией через gh (без изменения глобальных настроек git)
-git_auth() { git -c credential.helper= -c 'credential.helper=!gh auth git-credential' "$@"; }
+# http.postBuffer — чтобы GitHub не обрывал крупную отправку по таймауту (HTTP 408)
+git_auth() { git -c credential.helper= -c 'credential.helper=!gh auth git-credential' -c http.postBuffer=524288000 "$@"; }
 
 cd dist
 touch .nojekyll # иначе GitHub Pages (Jekyll) не отдаст папку _astro
