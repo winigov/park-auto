@@ -1,0 +1,180 @@
+---
+import type { Feature } from '../data/types';
+import Media from './Media.astro';
+
+interface Props {
+  features: Feature[];
+  title: string;
+  lead?: string;
+  note?: string;
+}
+const { features, title, lead, note } = Astro.props;
+---
+
+<section class="features section" id="features">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Возможности</span>
+      <h2 class="h-section">{title}</h2>
+      {lead && <p class="lead">{lead}</p>}
+    </div>
+
+    <ul class="features__grid">
+      {
+        features.map((f) => (
+          <li class:list={['feat', `feat--${f.size ?? 'normal'}`]} data-reveal>
+            <div class="feat__img">
+              <Media
+                photo={f.photo}
+                sizes={
+                  f.size === 'wide'
+                    ? '(max-width: 720px) 86vw, (max-width: 1100px) 100vw, 860px'
+                    : '(max-width: 720px) 86vw, (max-width: 1100px) 50vw, 430px'
+                }
+              />
+            </div>
+            <div class="feat__text">
+              <h3 class="feat__title">{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    {note && <p class="price-note features__note">{note}</p>}
+  </div>
+</section>
+
+<style>
+  .features {
+    border-top: 1px solid var(--line);
+  }
+
+  .features__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: 320px;
+    grid-auto-flow: row dense; /* без пустых ячеек, если широкая карточка не влезла в ряд */
+    gap: 16px;
+  }
+
+  .feat {
+    position: relative;
+    grid-column: span 4;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    isolation: isolate;
+  }
+
+  .feat--wide {
+    grid-column: span 8;
+  }
+
+  .feat--tall {
+    grid-row: span 2;
+  }
+
+  .feat__img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .feat__img :global(.media) {
+    transition: transform 0.9s var(--ease);
+  }
+
+  .feat:hover .feat__img :global(.media) {
+    transform: scale(1.04);
+  }
+
+  /* затемнение снизу под подпись */
+  .feat::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(0deg, rgb(8 9 11 / 0.92) 0%, rgb(8 9 11 / 0.55) 30%, rgb(8 9 11 / 0) 58%);
+  }
+
+  .feat__text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    gap: 8px;
+    padding: 24px 26px;
+  }
+
+  .feat__title {
+    font-family: var(--font-display);
+    font-size: clamp(17px, 1.5vw, 20px);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .feat__text p {
+    max-width: 46ch;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: #c9ccd1;
+  }
+
+  .features__note {
+    margin-top: 24px;
+  }
+
+  @media (max-width: 1100px) {
+    .features__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 300px;
+    }
+
+    .feat,
+    .feat--tall {
+      grid-column: span 1;
+      grid-row: auto;
+    }
+
+    .feat--wide {
+      grid-column: span 2;
+    }
+  }
+
+  /* Телефон: карточки листаются вбок, как лента */
+  @media (max-width: 720px) {
+    .features__grid {
+      display: flex;
+      gap: 12px;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+
+    .features__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .feat,
+    .feat--wide,
+    .feat--tall {
+      flex: 0 0 86%;
+      height: 400px;
+      scroll-snap-align: start;
+    }
+
+    .feat__text {
+      padding: 20px;
+    }
+  }
+</style>

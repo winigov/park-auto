@@ -9,6 +9,14 @@ import detail from '../../assets/atlas/detail.jpg';
 import dash from '../../assets/atlas/interior-dash.jpg';
 import rearSeats from '../../assets/atlas/interior-rear.jpg';
 import cabin from '../../assets/atlas/interior-cabin.jpg';
+import rear34 from '../../assets/atlas/rear-34.jpg';
+import taillight from '../../assets/atlas/taillight.jpg';
+// Фото цветов: с официальных карточек цветов Geely, китайские надписи убраны ретушью
+import colorBlack from '../../assets/atlas/color-black.jpg';
+import colorSilver from '../../assets/atlas/color-silver.jpg';
+import colorWhite from '../../assets/atlas/color-white.jpg';
+import colorTeal from '../../assets/atlas/color-teal.jpg';
+import colorBlue from '../../assets/atlas/color-blue.jpg';
 
 // Это НОВОЕ поколение Atlas для Китая (Geely Boyue L, 2025–2026), а не официальный российский Atlas.
 // TODO: подтвердить у «Парк Авто», какую версию они продают (VIN / фото салона: горизонтальный экран 14,6–15,4″ = Boyue L).
@@ -52,6 +60,47 @@ const model: CarModel = {
   ],
   statsNote: 'Данные для китайской версии Geely Boyue L нового поколения. Оснащение конкретного автомобиля сверяем по VIN.',
 
+  featuresTitle: 'Больше, чем ждёшь от кроссовера за эти деньги',
+  featuresLead: 'Большой экран, панорамная крыша, просторный салон и выразительный дизайн нового поколения.',
+  featuresNote: 'Оснащение зависит от комплектации — подробно в разделе «Комплектации и цены».',
+  features: [
+    {
+      size: 'wide',
+      title: 'Экран 15,4″ 2.5K',
+      text: 'Мультимедиа Flyme Auto на чипе Longying-1, цифровые приборы 10,25″ и кожаная отделка салона.',
+      photo: { src: dash, alt: 'Передняя панель Geely Atlas с экраном', shot: 'Салон: передняя панель', focus: '50% 55%' },
+    },
+    {
+      title: 'Панорамная крыша',
+      text: 'Светлый салон и ощущение простора над головой.',
+      photo: { src: cabin, alt: 'Салон Geely Atlas с панорамной крышей', shot: 'Салон', focus: '45% 40%' },
+    },
+    {
+      title: 'Просторный задний ряд',
+      text: 'Колёсная база 2785 мм и ровный пол на заднем ряду, а в багажник помещается 650 литров.',
+      photo: { src: rearSeats, alt: 'Задний диван Geely Atlas', shot: 'Задний ряд', focus: '55% 55%' },
+    },
+    {
+      title: 'Фонарь во всю ширину',
+      text: 'Сквозная световая линия сзади делает Atlas узнаваемым в вечернем потоке.',
+      photo: { src: taillight, alt: 'Задний сквозной фонарь Geely Atlas', shot: 'Фонарь', focus: '45% 50%' },
+    },
+    {
+      title: 'Выразительная корма',
+      text: 'Покатая линия крыши, спойлер и фонари, заходящие на крылья.',
+      photo: { src: rear34, alt: 'Geely Atlas, вид сзади-сбоку', shot: 'Вид 3/4 сзади', focus: '62% 60%' },
+    },
+  ],
+
+  colorPhotos: [
+    { name: 'Бирюзовый', hex: '#8fb3b6', photo: { src: colorTeal, alt: 'Geely Atlas бирюзового цвета', shot: 'Бирюзовый' } },
+    { name: 'Синий', hex: '#5c6bd8', photo: { src: colorBlue, alt: 'Geely Atlas синего цвета', shot: 'Синий' } },
+    { name: 'Серебристый', hex: '#b9c1cc', photo: { src: colorSilver, alt: 'Geely Atlas серебристого цвета', shot: 'Серебристый' } },
+    { name: 'Белый', hex: '#eceef0', photo: { src: colorWhite, alt: 'Geely Atlas белого цвета', shot: 'Белый' } },
+    { name: 'Чёрный', hex: '#1d1f24', photo: { src: colorBlack, alt: 'Geely Atlas чёрного цвета', shot: 'Чёрный' } },
+  ],
+  colorsNote: 'Наличие цвета в конкретной комплектации уточняйте у менеджера.',
+
   chapters: [
     {
       eyebrow: 'Новое поколение',
@@ -88,9 +137,11 @@ const model: CarModel = {
   },
 
   gallery: [
-    { src: rearSeats, alt: 'Задний диван Geely Atlas', shot: 'Задний ряд' },
-    { src: cabin, alt: 'Передние кресла и экран Geely Atlas', shot: 'Салон' },
     { src: hero, alt: 'Geely Atlas на закате', shot: 'Экстерьер', focus: '50% 60%' },
+    { src: rear34, alt: 'Geely Atlas, вид сзади-сбоку', shot: 'Вид 3/4 сзади', focus: '62% 60%' },
+    { src: colorWhite, alt: 'Geely Atlas белого цвета', shot: 'Белый' },
+    { src: taillight, alt: 'Задний фонарь Geely Atlas', shot: 'Фонарь' },
+    { src: colorBlue, alt: 'Geely Atlas синего цвета', shot: 'Синий' },
   ],
 
   ctaPhoto: { src: rear, alt: '', shot: 'Экстерьер', focus: '75% 70%' },
@@ -150,13 +201,13 @@ const model: CarModel = {
     },
   ],
 
-  // Официальных названий цветов китайской версии нет — перевод по фото и объявлениям. TODO: уточнить по наличию.
+  // Цвета — по официальным карточкам цветов Geely (перевод свой). TODO: уточнить по наличию.
   colors: [
-    { name: 'Белый', hex: '#eeeeec' },
-    { name: 'Чёрный', hex: '#141517' },
-    { name: 'Серебристый', hex: '#b9bdc2' },
-    { name: 'Серо-голубой', hex: '#5d7584' },
-    { name: 'Зелёный', hex: '#3f5d58' },
+    { name: 'Бирюзовый', hex: '#8fb3b6' },
+    { name: 'Синий', hex: '#5c6bd8' },
+    { name: 'Серебристый', hex: '#b9c1cc' },
+    { name: 'Белый', hex: '#eceef0' },
+    { name: 'Чёрный', hex: '#1d1f24' },
   ],
 
   specs: [

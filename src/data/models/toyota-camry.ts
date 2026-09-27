@@ -7,6 +7,16 @@ import side from '../../assets/camry/side.jpg';
 import rear from '../../assets/camry/rear.jpg';
 import detail from '../../assets/camry/detail.jpg';
 import dash from '../../assets/camry/interior-dash.jpg';
+import lineup from '../../assets/camry/lineup.jpg';
+import optics from '../../assets/camry/optics.jpg';
+import screen from '../../assets/camry/screen.jpg';
+import dashboard from '../../assets/camry/dashboard.jpg';
+import driver from '../../assets/camry/driver.jpg';
+import ambient from '../../assets/camry/ambient.jpg';
+import frontSeats from '../../assets/camry/front-seats.jpg';
+import wireless from '../../assets/camry/wireless.jpg';
+import rearSeats from '../../assets/camry/rear-seats.jpg';
+import multimedia from '../../assets/camry/multimedia.jpg';
 
 // «Camry 85» на рынке — обновлённая китайская GAC Toyota Camry 2027 модельного года (рестайлинг 9-го поколения, XV80).
 // TODO: уточнить у «Парк Авто», продают ли они именно рестайлинг (экран 15,6″) или дорестайлинг «80».
@@ -50,6 +60,65 @@ const model: CarModel = {
   ],
   statsNote:
     'Данные производителя для китайской Camry 2027 модельного года. Разгон до 100 км/ч производитель официально не публикует.',
+
+  featuresTitle: 'Комфорт, который чувствуешь каждый день',
+  featuresLead:
+    'Обновление 2027 модельного года добавило Camry большой экран, массаж, быструю беспроводную зарядку и заботу о задних пассажирах.',
+  featuresNote: 'Оснащение зависит от комплектации — подробно в разделе «Комплектации и цены».',
+  features: [
+    {
+      size: 'wide',
+      title: 'Экран 15,6″ в каждой версии',
+      text: 'Чип Snapdragon 8155P, цифровые приборы 8,8″ и подключение смартфона через CarPlay и HiCar.',
+      photo: { src: dashboard, alt: 'Передняя панель Toyota Camry с экраном 15,6 дюйма', shot: 'Панель и экран', focus: '60% 50%' },
+    },
+    {
+      title: 'Беспроводная зарядка 50 Вт',
+      text: 'Смартфон быстро заряжается прямо на консоли — без проводов.',
+      photo: { src: wireless, alt: 'Беспроводная зарядка на центральной консоли Toyota Camry', shot: 'Беспроводная зарядка', focus: '45% 50%' },
+    },
+    {
+      title: 'Массаж и вентиляция',
+      text: 'Подогрев, вентиляция и 10-точечный массаж передних кресел, память положения водителя.',
+      photo: { src: frontSeats, alt: 'Передние кресла Toyota Camry', shot: 'Передние сиденья', focus: '40% 50%' },
+    },
+    {
+      title: 'Комфорт на заднем ряду',
+      text: 'Подогрев, вентиляция и электроприводы спинок задних кресел — в гибридах HG и выше.',
+      photo: { src: rearSeats, alt: 'Задние сиденья Toyota Camry с подогревом и вентиляцией', shot: 'Задние сиденья', focus: '45% 50%' },
+    },
+    {
+      title: 'Подсветка на 64 цвета',
+      text: 'Контурная подсветка салона под настроение — от спокойного синего до тёплого янтарного.',
+      photo: { src: ambient, alt: 'Контурная подсветка салона Toyota Camry', shot: 'Подсветка салона', focus: '50% 50%' },
+    },
+    {
+      title: 'Место водителя',
+      text: 'Проекция на лобовое стекло, кресло с электроприводом и памятью, система контроля внимания водителя.',
+      photo: { src: driver, alt: 'Водитель за рулём Toyota Camry', shot: 'Место водителя', focus: '35% 40%' },
+    },
+    {
+      size: 'wide',
+      title: 'Классика или Sport Plus',
+      text: 'Строгий облик обычных версий или удлинённый бампер, спортивный обвес и диски R19 у Sport Plus.',
+      photo: { src: lineup, alt: 'Две версии Toyota Camry — обычная и Sport Plus', shot: 'Две версии кузова', focus: '50% 58%' },
+    },
+    {
+      title: 'Светодиодная оптика',
+      text: 'Узкие светодиодные фары и строгий фасад — фирменная черта новой Camry.',
+      photo: { src: optics, alt: 'Светодиодная фара Toyota Camry', shot: 'Передняя оптика', focus: '55% 45%' },
+    },
+    {
+      title: 'Всё на одном экране',
+      text: 'Навигация, музыка и климат — крупными плитками, которыми удобно пользоваться на ходу.',
+      photo: { src: multimedia, alt: 'Интерфейс мультимедиа Toyota Camry', shot: 'Интерфейс мультимедиа', focus: '50% 45%' },
+    },
+    {
+      title: 'Цифровые приборы',
+      text: 'Приборная панель 8,8″ и экран мультимедиа образуют единую линию перед водителем.',
+      photo: { src: screen, alt: 'Цифровые приборы и экран Toyota Camry', shot: 'Приборы и экран', focus: '55% 50%' },
+    },
+  ],
 
   chapters: [
     {

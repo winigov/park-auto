@@ -13,6 +13,8 @@ import dashAlt from '../../assets/m7/interior-dash-alt.jpg';
 import rearSeats from '../../assets/m7/interior-rear.jpg';
 import cabin from '../../assets/m7/interior-cabin.jpg';
 import crystal from '../../assets/m7/detail-crystal.jpg';
+import studio34 from '../../assets/m7/studio-34.jpg';
+import studioFront from '../../assets/m7/studio-front.jpg';
 
 // Характеристики — данные производителя для рынка Китая (galaxy-geely.com, dongchedi, autohome), сентябрь 2026.
 // Цены — ПРЕДВАРИТЕЛЬНЫЕ ориентиры. TODO: заменить на цены «Парк Авто».
@@ -53,6 +55,38 @@ const model: CarModel = {
   ],
   statsNote:
     'Данные производителя для китайского рынка. Запас хода — по циклу CLTC; по более строгому WLTC на электричестве — 155 км. Реальные значения зависят от стиля езды и температуры.',
+
+  featuresTitle: 'Салон и технологии, как в машине классом выше',
+  featuresLead: 'Экраны, хрусталь, простор и свет — всё, что делает каждую поездку на Galaxy M7 приятнее.',
+  featuresNote: 'Оснащение зависит от комплектации — подробно в разделе «Комплектации и цены».',
+  features: [
+    {
+      size: 'wide',
+      title: 'Экран 15,4″ 2.5K',
+      text: 'Чип Dragon Eagle-1, цифровые приборы 10,2″ и проекция на лобовое стекло 25,6″ в старших версиях.',
+      photo: { src: dashAlt, alt: 'Место водителя Geely Galaxy M7 с экраном', shot: 'Место водителя', focus: '50% 55%' },
+    },
+    {
+      title: 'Хрустальный селектор',
+      text: 'Селектор коробки и кнопки из хрусталя — в версиях Discovery+ и Starship.',
+      photo: { src: crystal, alt: 'Хрустальный селектор Geely Galaxy M7', shot: 'Селектор', focus: '50% 55%' },
+    },
+    {
+      title: 'Простор сзади',
+      text: 'Ровный пол и колёсная база 2785 мм — на заднем диване свободно, над головой панорамная крыша.',
+      photo: { src: rearSeats, alt: 'Задний диван Geely Galaxy M7', shot: 'Задний ряд', focus: '55% 55%' },
+    },
+    {
+      title: 'Панорамная крыша',
+      text: 'Открывающаяся крыша с электрошторкой — в каждой комплектации.',
+      photo: { src: cabin, alt: 'Салон Geely Galaxy M7 с панорамной крышей', shot: 'Салон', focus: '50% 40%' },
+    },
+    {
+      title: 'Световая подпись',
+      text: 'Сквозная светодиодная полоса через весь фасад — M7 узнают издалека.',
+      photo: { src: studioFront, alt: 'Geely Galaxy M7, вид спереди', shot: 'Фасад', focus: '50% 55%' },
+    },
+  ],
 
   chapters: [
     {
@@ -114,11 +148,10 @@ const model: CarModel = {
   },
 
   gallery: [
+    { src: studio34, alt: 'Geely Galaxy M7 в студии, вид 3/4 спереди', shot: 'Экстерьер', focus: '50% 60%' },
     { src: heroAlt, alt: 'Geely Galaxy M7 серебристого цвета на закате', shot: 'Экстерьер', focus: '50% 60%' },
-    { src: dashAlt, alt: 'Место водителя Geely Galaxy M7', shot: 'Место водителя' },
-    { src: rearSeats, alt: 'Задний диван Geely Galaxy M7', shot: 'Задний ряд' },
+    { src: studioFront, alt: 'Geely Galaxy M7 в студии, вид спереди', shot: 'Фасад', focus: '50% 55%' },
     { src: cabin, alt: 'Салон Geely Galaxy M7 с панорамной крышей', shot: 'Салон целиком' },
-    { src: crystal, alt: 'Хрустальный селектор коробки Geely Galaxy M7', shot: 'Деталь: селектор' },
   ],
 
   ctaPhoto: { src: heroAlt, alt: '', shot: 'Экстерьер', focus: '50% 60%' },

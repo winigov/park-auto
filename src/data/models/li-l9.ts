@@ -10,6 +10,18 @@ import dash from '../../assets/li-l9/interior-dash.jpg';
 import rearSeats from '../../assets/li-l9/interior-rear.jpg';
 import rearSeatsAlt from '../../assets/li-l9/interior-rear-alt.jpg';
 import cabin from '../../assets/li-l9/interior-cabin.jpg';
+import presence from '../../assets/li-l9/presence.jpg';
+import design from '../../assets/li-l9/design.jpg';
+import haloLights from '../../assets/li-l9/halo-lights.jpg';
+import goldBeltline from '../../assets/li-l9/gold-beltline.jpg';
+import secondRow from '../../assets/li-l9/second-row.jpg';
+import twoToneInterior from '../../assets/li-l9/two-tone-interior.jpg';
+import quiltedSeats from '../../assets/li-l9/quilted-seats.jpg';
+import woodTrim from '../../assets/li-l9/wood-trim.jpg';
+import colorBrownGold from '../../assets/li-l9/color-brown-gold.jpg';
+import colorBlackGold from '../../assets/li-l9/color-black-gold.jpg';
+import colorGreenGold from '../../assets/li-l9/color-green-gold.jpg';
+import colorPurpleGold from '../../assets/li-l9/color-purple-gold.jpg';
 
 // Характеристики — данные производителя для рынка Китая (lixiang.com, autohome, dongchedi), L9 2026, сентябрь 2026.
 // Цены — ПРЕДВАРИТЕЛЬНЫЕ ориентиры по рынку (Auto.ru, Drom, mashina.kg). TODO: заменить на цены «Парк Авто».
@@ -52,6 +64,57 @@ const model: CarModel = {
   statsNote:
     'Данные производителя для китайского рынка, версия Livis. Запас хода — по циклу WLTC; по китайскому CLTC — 1650 и 420 км. Реальные значения зависят от стиля езды и температуры.',
 
+  featuresTitle: 'Флагман, в котором продумана каждая деталь',
+  featuresLead: 'Кресла первого класса, премиальные материалы и технологии версии Livis.',
+  featuresNote: 'Часть оснащения — только в версии Livis; подробно — в разделе «Комплектации и цены».',
+  features: [
+    {
+      size: 'wide',
+      title: 'Кресла «нулевой гравитации»',
+      text: 'В первом и втором рядах — подогрев, вентиляция, массаж и электрические подставки для ног.',
+      photo: { src: secondRow, alt: 'Кресла второго ряда Li L9 Livis', shot: 'Второй ряд', focus: '45% 55%' },
+    },
+    {
+      title: 'Световая подпись',
+      text: 'Светящаяся линия через весь фасад и фары «трёх цветов» версии Livis.',
+      photo: { src: haloLights, alt: 'Световая линия на фасаде Li L9 Livis ночью', shot: 'Световая полоса', focus: '50% 60%' },
+    },
+    {
+      title: 'Кожа Nappa',
+      text: 'Ромбовидная стёжка и подголовники со встроенными динамиками.',
+      photo: { src: quiltedSeats, alt: 'Стёганые кресла Li L9 Livis', shot: 'Сиденья', focus: '50% 45%' },
+    },
+    {
+      title: 'Отделка деревом',
+      text: 'Тёплые деревянные вставки в сочетании с мягкой кожей.',
+      photo: { src: woodTrim, alt: 'Деревянная отделка салона Li L9 Livis', shot: 'Отделка деревом', focus: '45% 50%' },
+    },
+    {
+      title: 'Золотой молдинг',
+      text: 'Двухцветный кузов с золотой линией вдоль окон — отличительный знак Livis.',
+      photo: { src: goldBeltline, alt: 'Золотой молдинг и ручка двери Li L9 Livis', shot: 'Золотой молдинг', focus: '55% 50%' },
+    },
+    {
+      title: 'Флагманские пропорции',
+      text: '5255 мм длины, диски R22 и полный привод от двух электромоторов.',
+      photo: { src: design, alt: 'Li L9 Livis на городской улице', shot: 'Дизайн', focus: '45% 60%' },
+    },
+    {
+      size: 'wide',
+      title: 'Экран 29″ 6K',
+      text: 'Панорамный экран на всю переднюю панель, двухцветный салон и аудиосистема на 33 динамика.',
+      photo: { src: twoToneInterior, alt: 'Двухцветный салон и экран 29 дюймов Li L9 Livis', shot: 'Салон', focus: '50% 50%' },
+    },
+  ],
+
+  colorPhotos: [
+    { name: 'Коричневый с золотом', hex: 'linear-gradient(135deg, #5a4232 50%, #c9a863 50%)', photo: { src: colorBrownGold, alt: 'Li L9 Livis в коричнево-золотом кузове', shot: 'Коричневый с золотом', focus: '45% 60%' } },
+    { name: 'Чёрный с золотом', hex: 'linear-gradient(135deg, #141414 50%, #c9a863 50%)', photo: { src: colorBlackGold, alt: 'Li L9 Livis в чёрно-золотом кузове', shot: 'Чёрный с золотом', focus: '45% 60%' } },
+    { name: 'Зелёный с золотом', hex: 'linear-gradient(135deg, #2d4a3c 50%, #c9a863 50%)', photo: { src: colorGreenGold, alt: 'Li L9 Livis в зелёно-золотом кузове', shot: 'Зелёный с золотом', focus: '50% 60%' } },
+    { name: 'Фиолетовый с золотом', hex: 'linear-gradient(135deg, #3e2d4c 50%, #c9a863 50%)', photo: { src: colorPurpleGold, alt: 'Li L9 Livis в фиолетово-золотом кузове', shot: 'Фиолетовый с золотом', focus: '55% 60%' } },
+  ],
+  colorsNote: 'Двухцветные окраски — только у Livis. Ещё 7 однотонных цветов — в разделе «Комплектации и цены».',
+
   chapters: [
     {
       eyebrow: 'Дизайн',
@@ -88,10 +151,10 @@ const model: CarModel = {
   },
 
   gallery: [
+    { src: presence, alt: 'Li L9 Livis в фиолетово-золотом кузове у витрины', shot: 'Экстерьер', focus: '40% 60%' },
     { src: rearSeats, alt: 'Пассажиры во втором ряду Li L9 Livis', shot: 'Второй ряд' },
     { src: rearSeatsAlt, alt: 'Кресла второго ряда Li L9 Livis со столиком (аксессуар)', shot: 'Второй ряд' },
     { src: cabin, alt: 'Салон Li L9 Livis ночью с контурной подсветкой', shot: 'Салон целиком' },
-    { src: hero, alt: 'Li L9 Livis на улице', shot: 'Экстерьер', focus: '44% 60%' },
   ],
 
   ctaPhoto: { src: side, alt: '', shot: 'Экстерьер', focus: '52% 58%' },

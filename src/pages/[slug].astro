@@ -14,6 +14,8 @@ import WhyUs from '../components/WhyUs.astro';
 import Faq from '../components/Faq.astro';
 import LeadSection from '../components/LeadSection.astro';
 import Catalog from '../components/Catalog.astro';
+import Features from '../components/Features.astro';
+import ColorPicker from '../components/ColorPicker.astro';
 import Contacts from '../components/Contacts.astro';
 import { models } from '../data/models';
 import { companyFaq } from '../data/company';
@@ -33,7 +35,11 @@ const others = models.filter((m) => m.slug !== model.slug);
 const faq = model.faq?.length ? model.faq : companyFaq;
 
 const nav = [
-  model.chapters?.length ? { href: '#story', label: 'О модели' } : null,
+  model.features?.length
+    ? { href: '#features', label: 'Возможности' }
+    : model.chapters?.length
+      ? { href: '#story', label: 'О модели' }
+      : null,
   { href: '#trims', label: 'Цены' },
   { href: '#registration', label: 'Учёт РФ/КГ' },
   { href: '#credit', label: 'Кредит' },
@@ -104,7 +110,18 @@ const trimOptions = model.trims.map((t) => ({ id: t.id, name: t.name }));
 >
   <Hero model={model} />
   <Stats stats={model.stats} note={model.statsNote} />
+  {
+    model.features?.length ? (
+      <Features
+        features={model.features}
+        title={model.featuresTitle ?? `Что умеет ${name}`}
+        lead={model.featuresLead}
+        note={model.featuresNote}
+      />
+    ) : null
+  }
   {model.chapters?.length ? <Story chapters={model.chapters} /> : null}
+  {model.colorPhotos?.length ? <ColorPicker colors={model.colorPhotos} name={name} note={model.colorsNote} /> : null}
   {model.interior && <Interior interior={model.interior} />}
   {model.gallery?.length ? <Gallery photos={model.gallery} /> : null}
   {model.tech && <Tech tech={model.tech} />}

@@ -32,6 +32,23 @@ export interface Trim {
   popular?: boolean;
 }
 
+/** Карточка в блоке «Возможности»: фото функции с подписью */
+export interface Feature {
+  title: string;
+  text: string;
+  photo: Photo;
+  /** Размер в сетке: normal — треть ряда, wide — две трети, tall — треть ширины на два ряда */
+  size?: 'normal' | 'wide' | 'tall';
+}
+
+/** Цвет с живым фото — для блока «Цвета» */
+export interface ColorPhoto {
+  name: string;
+  /** Цвет кружка-переключателя (можно градиент для двухцветных) */
+  hex: string;
+  photo: Photo;
+}
+
 export interface Chapter {
   eyebrow: string;
   title: string;
@@ -102,6 +119,16 @@ export interface CarModel {
   stats: Stat[];
   /** Сноска под цифрами: источник, цикл измерения */
   statsNote: string;
+
+  /** Блок «Возможности» — главное, чем модель удобна и полезна (идёт сразу после цифр) */
+  features?: Feature[];
+  featuresTitle?: string;
+  featuresLead?: string;
+  /** Сноска под блоком: например, что оснащение зависит от комплектации */
+  featuresNote?: string;
+  /** Блок «Цвета» с живыми фото */
+  colorPhotos?: ColorPhoto[];
+  colorsNote?: string;
 
   chapters?: Chapter[];
   interior?: {

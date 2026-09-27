@@ -1,0 +1,175 @@
+---
+import type { ColorPhoto } from '../data/types';
+import Media from './Media.astro';
+
+interface Props {
+  colors: ColorPhoto[];
+  name: string;
+  note?: string;
+}
+const { colors, name, note } = Astro.props;
+---
+
+<section class="colors section section--alt" id="colors" data-colors>
+  <div class="container">
+    <div class="colors__head">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Цвета</span>
+        <h2 class="h-section">Выберите свой цвет</h2>
+      </div>
+      <div class="colors__picker" data-reveal>
+        <p class="colors__name" aria-live="polite" data-color-name>{colors[0].name}</p>
+        <div class="colors__swatches" role="radiogroup" aria-label={`Цвет кузова ${name}`}>
+          {
+            colors.map((c, i) => (
+              <button
+                type="button"
+                role="radio"
+                class="colors__sw"
+                style={`--c:${c.hex}`}
+                aria-checked={i === 0 ? 'true' : 'false'}
+                aria-label={c.name}
+                title={c.name}
+                data-color={i}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="colors__stage" data-reveal>
+      {
+        colors.map((c, i) => (
+          <div class:list={['colors__img', { 'is-active': i === 0 }]} data-color-img={i}>
+            <Media photo={c.photo} sizes="(max-width: 1280px) 100vw, 1280px" eager={i === 0} />
+          </div>
+        ))
+      }
+    </div>
+
+    {note && <p class="price-note colors__note">{note}</p>}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-colors]').forEach((root) => {
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-color]')];
+    const images = [...root.querySelectorAll<HTMLElement>('[data-color-img]')];
+    const label = root.querySelector<HTMLElement>('[data-color-name]')!;
+
+    const select = (i: number) => {
+      buttons.forEach((b, j) => b.setAttribute('aria-checked', String(i === j)));
+      images.forEach((img, j) => img.classList.toggle('is-active', i === j));
+      label.textContent = buttons[i].getAttribute('aria-label');
+    };
+
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => select(i));
+      // стрелки влево/вправо — как в обычной группе переключателей
+      b.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+        select(next);
+        buttons[next].focus();
+      });
+    });
+  });
+</script>
+
+<style>
+  .colors {
+    border-top: 1px solid var(--line);
+  }
+
+  .colors__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0 32px;
+  }
+
+  .colors__picker {
+    display: grid;
+    justify-items: end;
+    gap: 12px;
+    margin-bottom: clamp(40px, 5vw, 56px);
+  }
+
+  .colors__name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .colors__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .colors__sw {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.2),
+      inset 0 8px 10px rgb(255 255 255 / 0.18);
+    cursor: pointer;
+    transition: box-shadow 0.25s;
+  }
+
+  .colors__sw[aria-checked='true'] {
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.2),
+      inset 0 8px 10px rgb(255 255 255 / 0.18),
+      0 0 0 3px var(--bg-alt),
+      0 0 0 5px var(--silver);
+  }
+
+  .colors__stage {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .colors__img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s var(--ease);
+  }
+
+  .colors__img.is-active {
+    opacity: 1;
+  }
+
+  .colors__note {
+    margin-top: 20px;
+  }
+
+  @media (max-width: 720px) {
+    .colors__picker {
+      justify-items: start;
+      margin-bottom: 24px;
+    }
+
+    .colors__stage {
+      aspect-ratio: 16 / 10;
+      border-radius: 18px;
+    }
+
+    .colors__sw {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>
