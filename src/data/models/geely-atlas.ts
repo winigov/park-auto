@@ -11,7 +11,7 @@ import rearSeats from '../../assets/atlas/interior-rear.jpg';
 import cabin from '../../assets/atlas/interior-cabin.jpg';
 import rear34 from '../../assets/atlas/rear-34.jpg';
 import taillight from '../../assets/atlas/taillight.jpg';
-// Фото цветов: с официальных карточек цветов Geely, китайские надписи убраны ретушью
+// Фото цветов, корма и фонарь: официальные фото Geely в версии без китайских надписей (16:9, 1664 px)
 import colorBlack from '../../assets/atlas/color-black.jpg';
 import colorSilver from '../../assets/atlas/color-silver.jpg';
 import colorWhite from '../../assets/atlas/color-white.jpg';
@@ -88,7 +88,7 @@ const model: CarModel = {
     {
       title: 'Выразительная корма',
       text: 'Покатая линия крыши, спойлер и фонари, заходящие на крылья.',
-      photo: { src: rear34, alt: 'Geely Atlas, вид сзади-сбоку', shot: 'Вид 3/4 сзади', focus: '62% 60%' },
+      photo: { src: rear34, alt: 'Geely Atlas, вид сзади-сбоку', shot: 'Вид 3/4 сзади', focus: '62% 65%' },
     },
   ],
 
@@ -118,7 +118,7 @@ const model: CarModel = {
       eyebrow: 'Корма',
       title: 'Уверенный вид с любого ракурса',
       text: 'Строгая корма и багажник на 650 литров с дополнительной нишей под полом на 67 литров.',
-      photo: { src: rear, alt: 'Geely Atlas нового поколения, вид сзади на закате', shot: 'Вид 3/4 сзади', focus: '78% 72%' },
+      photo: { src: rear, alt: 'Geely Atlas нового поколения, вид сзади на закате', shot: 'Вид сзади', focus: '50% 70%' },
     },
   ],
 
@@ -144,7 +144,7 @@ const model: CarModel = {
     { src: colorBlue, alt: 'Geely Atlas синего цвета', shot: 'Синий' },
   ],
 
-  ctaPhoto: { src: rear, alt: '', shot: 'Экстерьер', focus: '75% 70%' },
+  ctaPhoto: { src: rear, alt: '', shot: 'Экстерьер', focus: '50% 70%' },
 
   tech: {
     title: 'Мощнее, чем официальный Atlas',
