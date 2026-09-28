@@ -18,7 +18,7 @@ interface Props {
 const { models, id = 'models', eyebrow, title, lead, filters = true, alt = false } = Astro.props;
 
 const uniq = <T,>(arr: T[]) => [...new Set(arr)];
-const seatsLabel = (g: string) => (g === '6+' ? '6–7' : g);
+const seatsLabel = (g: string) => (g === '6+' ? '6–7 мест' : `${g} ${plural(Number(g), ['место', 'места', 'мест'])}`);
 
 // Группа фильтра показывается, только если в каталоге есть хотя бы два разных значения
 const groups = [
@@ -51,21 +51,35 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
         <div class="catalog__bar">
           <div class="catalog__filters" data-filters>
             {groups.map((g) => (
-              <label class="fsel" data-group={g.key}>
-                <span class="fsel__label">{g.label}</span>
-                <span class="fsel__value" data-value-label>
-                  Все
-                </span>
-                <svg class="fsel__chev" viewBox="0 0 12 8" aria-hidden="true">
-                  <path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                </svg>
-                <select aria-label={g.label}>
-                  <option value="all">Все</option>
-                  {g.values.map(({ v, t }) => (
-                    <option value={v}>{t}</option>
+              <div class="fsel" data-group={g.key}>
+                <button
+                  type="button"
+                  class="fsel__btn"
+                  id={`${id}-${g.key}-btn`}
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls={`${id}-${g.key}-list`}
+                  data-fsel-btn
+                >
+                  <span class="fsel__label">{g.label}</span>
+                  <span class="fsel__value" data-value-label>
+                    Все
+                  </span>
+                  <svg class="fsel__chev" viewBox="0 0 12 8" aria-hidden="true">
+                    <path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <ul class="fsel__menu" id={`${id}-${g.key}-list`} role="listbox" aria-labelledby={`${id}-${g.key}-btn`} data-fsel-menu>
+                  {[{ v: 'all', t: 'Все' }, ...g.values].map(({ v, t }) => (
+                    <li role="option" tabindex="-1" aria-selected={v === 'all' ? 'true' : 'false'} data-value={v}>
+                      {t}
+                      <svg viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </li>
                   ))}
-                </select>
-              </label>
+                </ul>
+              </div>
             ))}
             <button type="button" class="catalog__reset" data-reset hidden>
               Сбросить
@@ -121,29 +135,91 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
       resetBtn.hidden = Object.values(state).every((v) => v === 'all');
     };
 
-    // Подпись на кнопке-списке и состояние фильтра — по выбранному пункту
-    const sync = (group: HTMLElement) => {
-      const select = group.querySelector('select')!;
-      state[group.dataset.group!] = select.value;
-      group.querySelector('[data-value-label]')!.textContent = select.selectedOptions[0]?.text ?? 'Все';
-      group.classList.toggle('is-active', select.value !== 'all');
+    // Выпадающие списки в стиле сайта: кнопка + меню с пунктами (роль listbox)
+    const btnOf = (g: HTMLElement) => g.querySelector<HTMLButtonElement>('[data-fsel-btn]')!;
+    const optionsOf = (g: HTMLElement) => [...g.querySelectorAll<HTMLElement>('[role="option"]')];
+
+    const close = (g: HTMLElement, focusBtn = false) => {
+      if (!g.classList.contains('is-open')) return;
+      g.classList.remove('is-open');
+      btnOf(g).setAttribute('aria-expanded', 'false');
+      if (focusBtn) btnOf(g).focus();
+    };
+    const closeAll = () => groups.forEach((g) => close(g));
+
+    const open = (g: HTMLElement) => {
+      closeAll();
+      const menu = g.querySelector<HTMLElement>('[data-fsel-menu]')!;
+      g.classList.add('is-open');
+      btnOf(g).setAttribute('aria-expanded', 'true');
+      // у правого края экрана меню открываем влево
+      menu.classList.remove('is-right');
+      if (menu.getBoundingClientRect().right > document.documentElement.clientWidth - 12) menu.classList.add('is-right');
+      (optionsOf(g).find((o) => o.getAttribute('aria-selected') === 'true') ?? optionsOf(g)[0]).focus();
     };
 
-    groups.forEach((group) => {
-      group.querySelector('select')!.addEventListener('change', () => {
-        sync(group);
-        apply();
+    const choose = (g: HTMLElement, value: string) => {
+      state[g.dataset.group!] = value;
+      optionsOf(g).forEach((o) => o.setAttribute('aria-selected', String(o.dataset.value === value)));
+      const picked = optionsOf(g).find((o) => o.dataset.value === value);
+      g.querySelector('[data-value-label]')!.textContent = picked?.textContent?.trim() ?? 'Все';
+      g.classList.toggle('is-active', value !== 'all');
+    };
+
+    groups.forEach((g) => {
+      state[g.dataset.group!] = 'all';
+      const btn = btnOf(g);
+      btn.addEventListener('click', () => (g.classList.contains('is-open') ? close(g) : open(g)));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          open(g);
+        } else if (e.key === 'Escape') close(g, true);
       });
-      sync(group); // браузер мог восстановить выбор при возврате на страницу
+
+      g.querySelector<HTMLElement>('[data-fsel-menu]')!.addEventListener('click', (e) => {
+        const opt = (e.target as HTMLElement).closest<HTMLElement>('[role="option"]');
+        if (!opt) return;
+        choose(g, opt.dataset.value!);
+        apply();
+        close(g, true);
+      });
+
+      g.querySelector<HTMLElement>('[data-fsel-menu]')!.addEventListener('keydown', (e) => {
+        const opts = optionsOf(g);
+        const i = opts.indexOf(document.activeElement as HTMLElement);
+        const go = (n: number) => {
+          e.preventDefault();
+          opts[(n + opts.length) % opts.length].focus();
+        };
+        if (e.key === 'ArrowDown') go(i + 1);
+        else if (e.key === 'ArrowUp') go(i - 1);
+        else if (e.key === 'Home') go(0);
+        else if (e.key === 'End') go(opts.length - 1);
+        else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (i >= 0) {
+            choose(g, opts[i].dataset.value!);
+            apply();
+          }
+          close(g, true);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          close(g, true);
+        } else if (e.key === 'Tab') close(g);
+      });
     });
+
+    // клик мимо меню закрывает его
+    document.addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('.fsel')) closeAll();
+    });
+
     apply();
 
     root.querySelectorAll('[data-reset]').forEach((btn) =>
       btn.addEventListener('click', () => {
-        groups.forEach((group) => {
-          group.querySelector('select')!.value = 'all';
-          sync(group);
-        });
+        groups.forEach((g) => choose(g, 'all'));
         apply();
       }),
     );
@@ -182,6 +258,9 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
 
   .fsel {
     position: relative;
+  }
+
+  .fsel__btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -199,18 +278,14 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
       background-color 0.2s;
   }
 
-  .fsel:hover {
+  .fsel__btn:hover,
+  .fsel.is-open .fsel__btn {
     border-color: #3b3e45;
   }
 
-  .fsel.is-active {
+  .fsel.is-active .fsel__btn {
     border-color: var(--silver-2);
     background: var(--surface-3);
-  }
-
-  .fsel:has(select:focus-visible) {
-    outline: 2px solid var(--silver);
-    outline-offset: 3px;
   }
 
   .fsel__label {
@@ -228,18 +303,92 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
     height: 10px;
     margin-left: 2px;
     color: var(--ink-3);
+    transition: transform 0.25s var(--ease);
   }
 
-  /* Сам список прозрачный поверх кнопки: по нажатию открывается системный выбор.
-     16px — чтобы iPhone не увеличивал страницу при открытии */
-  .fsel select {
+  .fsel.is-open .fsel__chev {
+    transform: rotate(180deg);
+  }
+
+  /* Меню: тёмная карточка сайта. Прячем через visibility у самого меню — не у детей */
+  .fsel__menu {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    z-index: 30;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: max(100%, 200px);
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    border: 1px solid var(--line-2);
+    border-radius: 18px;
+    background: #15171b;
+    box-shadow: 0 24px 60px -12px rgb(0 0 0 / 0.75);
     opacity: 0;
-    font-size: 16px;
+    visibility: hidden;
+    transform: translateY(-6px);
+    /* при закрытии visibility выключается после анимации, при открытии — сразу (иначе фокус не попадёт в меню) */
+    transition:
+      opacity 0.2s,
+      transform 0.25s var(--ease),
+      visibility 0s 0.2s;
+  }
+
+  .fsel__menu.is-right {
+    left: auto;
+    right: 0;
+  }
+
+  .fsel.is-open .fsel__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.2s,
+      transform 0.25s var(--ease),
+      visibility 0s;
+  }
+
+  .fsel__menu li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 42px;
+    padding: 0 12px 0 14px;
+    border-radius: 12px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    white-space: nowrap;
     cursor: pointer;
+    outline: none;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+  }
+
+  .fsel__menu li:hover,
+  .fsel__menu li:focus-visible {
+    background: var(--surface-3);
+    color: var(--ink);
+  }
+
+  .fsel__menu li[aria-selected='true'] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .fsel__menu li svg {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--silver);
+    opacity: 0;
+  }
+
+  .fsel__menu li[aria-selected='true'] svg {
+    opacity: 1;
   }
 
   .catalog__reset {
@@ -345,9 +494,14 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
       gap: 6px;
     }
 
-    .fsel {
+    .fsel__btn {
       height: 38px;
       padding: 0 10px 0 13px;
+    }
+
+    .fsel__menu li {
+      min-height: 46px;
+      font-size: 15px;
     }
 
     /* На узком экране — одно слово: название фильтра, а после выбора — значение */
