@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://park-auto.example/sitemap-index.xml
