@@ -18,14 +18,14 @@ interface Props {
 const { models, id = 'models', eyebrow, title, lead, filters = true, alt = false } = Astro.props;
 
 const uniq = <T,>(arr: T[]) => [...new Set(arr)];
-const seatsLabel = (g: string) => (g === '6+' ? '6–7 мест' : `${g} ${plural(Number(g), ['место', 'места', 'мест'])}`);
+const seatsLabel = (g: string) => (g === '6+' ? '6–7' : g);
 
 // Группа фильтра показывается, только если в каталоге есть хотя бы два разных значения
 const groups = [
   { key: 'body', label: 'Кузов', values: uniq(models.map((m) => m.body)).map((v) => ({ v, t: bodyLabels[v] })) },
   {
     key: 'seats',
-    label: 'Мест',
+    label: 'Места',
     values: uniq(models.map((m) => (m.seats >= 6 ? '6+' : String(m.seats)))).sort().map((v) => ({ v, t: seatsLabel(v) })),
   },
   { key: 'energy', label: 'Двигатель', values: uniq(models.flatMap(energiesOf)).map((v) => ({ v, t: energyShort[v] })) },
@@ -43,27 +43,40 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
         <h2 class="h-section">{title}</h2>
         {lead && <p class="lead">{lead}</p>}
       </div>
-      <RegSwitch name={`reg-${id}`} class="catalog__reg" />
+      {!showFilters && <RegSwitch name={`reg-${id}`} class="catalog__reg" />}
     </div>
 
     {
       showFilters && (
-        <div class="catalog__filters" data-filters>
-          {groups.map((g) => (
-            <div class="chips" role="group" aria-label={g.label} data-group={g.key}>
-              <button type="button" class="chip" aria-pressed="true" data-value="all">
-                {g.key === 'body' ? 'Все кузова' : g.key === 'seats' ? 'Любое число мест' : 'Все двигатели'}
-              </button>
-              {g.values.map(({ v, t }) => (
-                <button type="button" class="chip" aria-pressed="false" data-value={v}>
-                  {t}
-                </button>
-              ))}
-            </div>
-          ))}
-          <p class="catalog__count" aria-live="polite" data-count>
-            {count(models.length)}
-          </p>
+        <div class="catalog__bar">
+          <div class="catalog__filters" data-filters>
+            {groups.map((g) => (
+              <label class="fsel" data-group={g.key}>
+                <span class="fsel__label">{g.label}</span>
+                <span class="fsel__value" data-value-label>
+                  Все
+                </span>
+                <svg class="fsel__chev" viewBox="0 0 12 8" aria-hidden="true">
+                  <path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                <select aria-label={g.label}>
+                  <option value="all">Все</option>
+                  {g.values.map(({ v, t }) => (
+                    <option value={v}>{t}</option>
+                  ))}
+                </select>
+              </label>
+            ))}
+            <button type="button" class="catalog__reset" data-reset hidden>
+              Сбросить
+            </button>
+          </div>
+          <div class="catalog__side">
+            <p class="catalog__count" aria-live="polite" data-count>
+              {count(models.length)}
+            </p>
+            <RegSwitch name={`reg-${id}`} class="catalog__reg catalog__reg--sm" />
+          </div>
         </div>
       )
     }
@@ -89,9 +102,11 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
     const filters = root.querySelector('[data-filters]');
     if (!filters) return;
     const cards = [...root.querySelectorAll<HTMLElement>('[data-card]')];
+    const groups = [...filters.querySelectorAll<HTMLElement>('[data-group]')];
     const state: Record<string, string> = {};
     const countEl = root.querySelector('[data-count]')!;
     const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    const resetBtn = filters.querySelector<HTMLElement>('[data-reset]')!;
 
     const apply = () => {
       let shown = 0;
@@ -103,27 +118,35 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
       });
       countEl.textContent = `${shown} ${plural(shown, ['модель', 'модели', 'моделей'])}`;
       empty.hidden = shown > 0;
+      resetBtn.hidden = Object.values(state).every((v) => v === 'all');
     };
 
-    const select = (group: HTMLElement, value: string) => {
-      state[group.dataset.group!] = value;
-      group.querySelectorAll<HTMLButtonElement>('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.value === value)));
+    // Подпись на кнопке-списке и состояние фильтра — по выбранному пункту
+    const sync = (group: HTMLElement) => {
+      const select = group.querySelector('select')!;
+      state[group.dataset.group!] = select.value;
+      group.querySelector('[data-value-label]')!.textContent = select.selectedOptions[0]?.text ?? 'Все';
+      group.classList.toggle('is-active', select.value !== 'all');
     };
 
-    filters.querySelectorAll<HTMLElement>('[data-group]').forEach((group) => {
-      state[group.dataset.group!] = 'all';
-      group.addEventListener('click', (e) => {
-        const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip');
-        if (!chip) return;
-        select(group, chip.dataset.value!);
+    groups.forEach((group) => {
+      group.querySelector('select')!.addEventListener('change', () => {
+        sync(group);
         apply();
       });
+      sync(group); // браузер мог восстановить выбор при возврате на страницу
     });
+    apply();
 
-    root.querySelector('[data-reset]')?.addEventListener('click', () => {
-      filters.querySelectorAll<HTMLElement>('[data-group]').forEach((g) => select(g, 'all'));
-      apply();
-    });
+    root.querySelectorAll('[data-reset]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        groups.forEach((group) => {
+          group.querySelector('select')!.value = 'all';
+          sync(group);
+        });
+        apply();
+      }),
+    );
   });
 </script>
 
@@ -140,47 +163,128 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
     margin-bottom: clamp(40px, 6vw, 72px);
   }
 
+  /* Фильтр: одна строка — выпадающие списки слева, счётчик и учёт справа */
+  .catalog__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin: -12px 0 24px;
+  }
+
   .catalog__filters {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 24px;
-    margin: -16px 0 28px;
+    gap: 8px;
   }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
+  .fsel {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
     gap: 6px;
-  }
-
-  .chip {
-    padding: 10px 18px;
-    border: 0;
+    height: 40px;
+    padding: 0 14px 0 16px;
+    border: 1px solid var(--line-2);
     border-radius: 999px;
-    background: var(--surface-3);
+    background: var(--surface-2);
     font-size: 14px;
-    font-weight: 600;
-    color: var(--silver);
+    line-height: 1;
+    white-space: nowrap;
     cursor: pointer;
     transition:
-      background-color 0.2s,
-      color 0.2s;
+      border-color 0.2s,
+      background-color 0.2s;
   }
 
-  .chip:hover {
-    color: #fff;
+  .fsel:hover {
+    border-color: #3b3e45;
   }
 
-  .chip[aria-pressed='true'] {
-    background: var(--ink);
-    color: #08090b;
+  .fsel.is-active {
+    border-color: var(--silver-2);
+    background: var(--surface-3);
+  }
+
+  .fsel:has(select:focus-visible) {
+    outline: 2px solid var(--silver);
+    outline-offset: 3px;
+  }
+
+  .fsel__label {
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+
+  .fsel__value {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .fsel__chev {
+    width: 10px;
+    height: 10px;
+    margin-left: 2px;
+    color: var(--ink-3);
+  }
+
+  /* Сам список прозрачный поверх кнопки: по нажатию открывается системный выбор.
+     16px — чтобы iPhone не увеличивал страницу при открытии */
+  .fsel select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .catalog__reset {
+    height: 40px;
+    padding: 0 8px;
+    border: 0;
+    background: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .catalog__reset:hover {
+    color: var(--ink);
+  }
+
+  .catalog__reset[hidden] {
+    display: none;
+  }
+
+  .catalog__side {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
   }
 
   .catalog__count {
-    margin-left: auto;
     font-size: 14px;
     color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  /* Переключатель учёта в строке фильтра — той же высоты, что и списки */
+  .catalog__side :global(.reg-switch) {
+    padding: 3px;
+  }
+
+  .catalog__side :global(.reg-switch span) {
+    padding: 9px 16px;
+    font-size: 14px;
+    line-height: 1;
   }
 
   .catalog {
@@ -216,29 +320,45 @@ const count = (n: number) => `${n} ${plural(n, ['модель', 'модели', 
   }
 
   @media (max-width: 720px) {
-    .catalog__filters {
-      flex-direction: column;
-      align-items: stretch;
+    .catalog__bar {
+      gap: 10px;
+      margin-top: -20px;
     }
 
-    .chips {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      margin-inline: calc(-1 * var(--gutter));
-      padding-inline: var(--gutter);
-      scrollbar-width: none;
-    }
-
-    .chips::-webkit-scrollbar {
-      display: none;
-    }
-
-    .chip {
-      flex: 0 0 auto;
+    /* На телефоне: сверху учёт и счётчик, под ними списки */
+    .catalog__side {
+      order: -1;
+      width: 100%;
+      justify-content: space-between;
+      margin-left: 0;
     }
 
     .catalog__count {
-      margin-left: 0;
+      order: 1;
+    }
+
+    .catalog__filters {
+      gap: 6px;
+    }
+
+    .catalog__filters {
+      gap: 6px;
+    }
+
+    .fsel {
+      height: 38px;
+      padding: 0 10px 0 13px;
+    }
+
+    /* На узком экране — одно слово: название фильтра, а после выбора — значение */
+    .fsel:not(.is-active) .fsel__value,
+    .fsel.is-active .fsel__label {
+      display: none;
+    }
+
+    .fsel__label {
+      color: var(--ink);
+      font-weight: 600;
     }
   }
 </style>
